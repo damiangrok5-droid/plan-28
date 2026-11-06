@@ -208,10 +208,10 @@ const LS = {
 };
 
 const BLOCKS = [
-  {id:"A", name:"Adaptacja", weeks:[1,6], rir:"RIR 4 → 2", note:"Wracasz do objętości i techniki. Dół odrabiasz w krótkim, wygodnym zakresie przysiadu. Ciężary startowe są poniżej ostatnich wyników."},
-  {id:"B", name:"Kształt", weeks:[7,14], rir:"RIR 2–3", note:"Dół nadal w planie, żeby dogonić zaległości, ale bez gonienia dużych nóg. Góra buduje klatkę, plecy i bok barku."},
-  {id:"C", name:"Rozwój", weeks:[15,21], rir:"RIR 2", note:"Więcej serii na górze. Dół zostaje na utrzymaniu, bez dokładania serii. Kalorie blisko utrzymania, ewentualnie mały deficyt jeśli talia rośnie."},
-  {id:"D", name:"Szlif", weeks:[22,28], rir:"RIR 2", note:"Szlif góry i utrzymanie dołu. Jakość ruchu, ewentualne doprecyzowanie kalorii pod wygląd."}
+  {id:"A", name:"Adaptacja", weeks:[1,6], rir:"RIR 4 → 2", note:"Tygodnie 1–2: 2 serie, RIR 4, lżejszy ciężar i nauka pozycji. Tygodnie 3–5: 3 serie. Tydzień 6: deload (2 serie, trochę lżejszy ciężar). Dół odrabiasz w krótkim zakresie."},
+  {id:"B", name:"Kształt", weeks:[7,14], rir:"RIR 2–3", note:"Więcej serii na głównych ruchach (do 4). Dół nadal odrabia zaległości, góra buduje klatkę, plecy i bok barku. Ciężary idą w kierunku ostatnich wyników z dziennika."},
+  {id:"C", name:"Rozwój", weeks:[15,21], rir:"RIR 2", note:"Góra dostaje więcej serii, dół schodzi na utrzymanie (mniej serii). Ciężary zbliżają się do ostatnich roboczych. Kalorie blisko utrzymania."},
+  {id:"D", name:"Szlif", weeks:[22,28], rir:"RIR 2", note:"3 serie jakościowe, wyższe ciężary niż na starcie, bez dokładania objętości. Tydzień 28 jest lżejszy. Góra w priorytecie, dół na utrzymaniu."}
 ];
 
 const DAYS = [
@@ -223,38 +223,59 @@ const DAYS = [
 
 const EX = {
   UA: [
-    {n:"Wyciskanie hantli na skosie", s0:3, r:"8–10", w:28, step:1, cap:44, alt:"Wyciskanie sztangi na skosie albo maszyna"},
-    {n:"Ściąganie drążka nachwytem (szerokie)", s0:3, r:"8–10", w:55, step:2.5, cap:80, alt:"Podciąganie nachwytem z pomocą"},
-    {n:"Pompki na poręczach (dipy) z obciążeniem", s0:3, r:"8–10", w:15, step:2.5, cap:40, alt:"Wyciskanie na maszynie poziomej"},
-    {n:"Wiosłowanie z podparciem klatki", s0:3, r:"8–10", w:60, step:2.5, cap:90, alt:"Wiosło na wyciągu siedząc"},
-    {n:"Wznosy bokiem na wyciągu", s0:3, r:"12–15", w:8, step:1, cap:14, alt:"Wznosy hantlami stojąc"},
-    {n:"Face pull", s0:3, r:"12–15", w:10, step:1.25, cap:16, alt:"Odwrotne rozpiętki na maszynie"},
-    {n:"Uginanie ze sztangą łamaną", s0:2, r:"8–12", w:30, step:2.5, cap:45, alt:"Uginanie na wyciągu"}
+    {n:"Wyciskanie hantli na skosie", kind:"main", w:32, step:1, cap:38, alt:"Wyciskanie sztangi na skosie albo maszyna"},
+    {n:"Ściąganie drążka nachwytem (szerokie)", kind:"main", w:60, step:2.5, cap:75, alt:"Podciąganie nachwytem z pomocą"},
+    {n:"Pompki na poręczach (dipy) z obciążeniem", kind:"main", w:10, step:2.5, cap:30, alt:"Wyciskanie na maszynie poziomej"},
+    {n:"Wiosłowanie z podparciem klatki", kind:"main", w:65, step:2.5, cap:85, alt:"Wiosło na wyciągu siedząc"},
+    {n:"Wznosy bokiem na wyciągu", kind:"iso", w:8, step:1, cap:12, alt:"Wznosy hantlami stojąc"},
+    {n:"Uginanie ze sztangą łamaną", kind:"iso", w:25, step:2.5, cap:35, alt:"Uginanie na wyciągu"}
   ],
   LA: [
-    {n:"Hip thrust", s0:3, r:"8–10", w:100, step:5, cap:165, alt:"Mostek z hantlem"},
-    {n:"RDL z kontrolowanym zakresem", s0:3, r:"6–8", w:80, step:2.5, cap:120, alt:"Prostowanie tułowia 45° z lekko ugiętymi kolanami"},
-    {n:"Leg press (stopy trochę wyżej, bez głębokiego zgięcia)", s0:3, r:"10–12", w:140, step:5, cap:210, alt:"Hack tylko do tej samej, wygodnej wysokości"},
-    {n:"Uginanie ud siedząc", s0:2, r:"10–12", w:70, step:2.5, cap:100, alt:"Uginanie ud leżąc"},
-    {n:"Wspięcia na palce siedząc", s0:2, r:"10–15", w:35, step:2.5, cap:55, alt:"Wspięcia stojąc"},
-    {n:"Pallof press", s0:2, r:"8–10/str", w:0, step:0, cap:0, alt:"Dead bug"}
+    {n:"Hip thrust", kind:"main", w:90, step:5, cap:150, alt:"Mostek z hantlem"},
+    {n:"RDL z kontrolowanym zakresem", kind:"main", w:60, step:2.5, cap:100, alt:"Prostowanie tułowia 45° z lekko ugiętymi kolanami"},
+    {n:"Leg press (stopy trochę wyżej, bez głębokiego zgięcia)", kind:"main", w:150, step:5, cap:200, alt:"Hack tylko do tej samej, wygodnej wysokości"},
+    {n:"Uginanie ud siedząc", kind:"iso", w:60, step:2.5, cap:85, alt:"Uginanie ud leżąc"},
+    {n:"Wspięcia na palce siedząc", kind:"iso", w:40, step:2.5, cap:60, alt:"Wspięcia stojąc"}
   ],
   UB: [
-    {n:"Wyciskanie sztangi leżąc", s0:3, r:"6–8", w:75, step:2.5, cap:117.5, alt:"Wyciskanie na maszynie poziomej"},
-    {n:"Wiosłowanie jednorącz na maszynie", s0:3, r:"8–10", w:80, step:5, cap:130, alt:"Wiosło hantlem z podparciem klatki"},
-    {n:"Wyciskanie hantli siedząc z oparciem", s0:3, r:"6–8", w:16, step:1, cap:28, alt:"Wyciskanie na maszynie barkowej albo landmine press"},
-    {n:"Ściąganie wyciągu prostymi ramionami", s0:3, r:"10–12", w:25, step:2.5, cap:45, alt:"Ściąganie wąskim chwytem"},
-    {n:"Rozpiętki na maszynie lub wyciągu", s0:2, r:"12–15", w:0, step:0, cap:0, alt:"Krzyżowanie wyciągów"},
-    {n:"Wznosy bokiem hantlami", s0:3, r:"12–15", w:8, step:1, cap:14, alt:"Wznosy na maszynie"},
-    {n:"Prostowanie na wyciągu + uginanie młotkowe", s0:2, r:"10–12", w:25, step:2.5, cap:40, alt:"Wyciskanie francuskie / uginanie na ławce skośnej"}
+    {n:"Wyciskanie sztangi leżąc", kind:"main", w:85, step:2.5, cap:105, alt:"Wyciskanie na maszynie poziomej"},
+    {n:"Wiosłowanie jednorącz na maszynie", kind:"main", w:85, step:5, cap:115, alt:"Wiosło hantlem z podparciem klatki"},
+    {n:"Wyciskanie hantli siedząc z oparciem", kind:"main", w:20, step:1, cap:26, alt:"Wyciskanie na maszynie barkowej albo landmine press"},
+    {n:"Ściąganie wyciągu prostymi ramionami", kind:"iso", w:22, step:2.5, cap:35, alt:"Ściąganie wąskim chwytem"},
+    {n:"Rozpiętki na maszynie lub wyciągu", kind:"iso", w:20, step:2.5, cap:35, alt:"Krzyżowanie wyciągów"},
+    {n:"Wznosy bokiem hantlami", kind:"iso", w:9, step:1, cap:14, alt:"Wznosy na maszynie"},
+    {n:"Prostowanie na wyciągu + uginanie młotkowe", kind:"iso", w:22, step:2.5, cap:35, alt:"Wyciskanie francuskie / uginanie na ławce skośnej"}
   ],
   LB: [
-    {n:"Przysiad do wygodnej wysokości", s0:3, r:"6–8", w:50, step:2.5, cap:100, alt:"Box squat, goblet do skrzyni albo hack — nigdy do siadu na piętach"},
-    {n:"Odwrotny wypad (krótki krok, kolano nie wychodzi mocno w przód)", s0:2, r:"8/nogę", w:12, step:2, cap:28, alt:"Niski step-up, bez siadania w głęboki zakres"},
-    {n:"Prostowanie nóg siedząc (środkowy zakres)", s0:2, r:"10–12", w:40, step:2.5, cap:70, alt:"Jeśli pod rzepką pojawia się ucisk — odpuść i zostań przy leg pressie w wygodnym zakresie"},
-    {n:"Prostowanie tułowia na ławce 45°", s0:3, r:"10–12", w:0, step:0, cap:0, alt:"Hip thrust lżejszy"},
-    {n:"Wspięcia stojąc", s0:2, r:"10–15", w:60, step:5, cap:110, alt:"Wspięcia siedząc"},
-    {n:"Odwodzenie biodra na maszynie", s0:2, r:"12–15", w:0, step:0, cap:0, alt:"Chód z taśmą w bok"}
+    {n:"Przysiad do wygodnej wysokości", kind:"main", w:40, step:2.5, cap:70, alt:"Box squat, goblet do skrzyni albo hack — nigdy do siadu na piętach"},
+    {n:"Odwrotny wypad (krótki krok, kolano nie wychodzi mocno w przód)", kind:"iso", w:10, step:2, cap:20, alt:"Niski step-up, bez siadania w głęboki zakres"},
+    {n:"Prostowanie nóg siedząc (środkowy zakres)", kind:"iso", w:35, step:2.5, cap:55, alt:"Jeśli pod rzepką pojawia się ucisk — odpuść i zostań przy leg pressie w wygodnym zakresie"},
+    {n:"Prostowanie tułowia na ławce 45°", kind:"iso", bw:true, alt:"Hip thrust lżejszy"},
+    {n:"Wspięcia stojąc", kind:"iso", w:50, step:5, cap:90, alt:"Wspięcia siedząc"},
+    {n:"Odwodzenie biodra na maszynie", kind:"iso", w:25, step:5, cap:45, alt:"Chód z taśmą w bok"}
+  ]
+};
+
+const CORE = {
+  UA: [
+    {n:"Dead bug (żebra w dół, lędźwie na macie)", bw:true, r:"6–8/str", alt:"Bird dog"},
+    {n:"Wznosy Y leżąc przodem na ławce", bw:true, r:"10–12", alt:"Band pull-apart"},
+    {n:"Face pull (łopatki w dół i w tył)", w:12, step:1.25, cap:20, r:"12–15", alt:"Odwrotne rozpiętki"}
+  ],
+  LA: [
+    {n:"Pallof press", w:10, step:1.25, cap:18, r:"8–10/str", alt:"Martwy błąd / dead bug"},
+    {n:"Dead bug (żebra w dół)", bw:true, r:"6–8/str", alt:"Bird dog"},
+    {n:"Deska bokiem na kolanie", bw:true, r:"20–30 s/str", alt:"Pallof jednorącz"}
+  ],
+  UB: [
+    {n:"Face pull (łopatki w dół i w tył)", w:12, step:1.25, cap:20, r:"12–15", alt:"Odwrotne rozpiętki"},
+    {n:"Dead bug (żebra w dół)", bw:true, r:"6–8/str", alt:"Bird dog"},
+    {n:"Spacer farmerski, tułów wysoki", w:20, step:2, cap:32, r:"20–30 s", alt:"Suitcase carry, jedna strona po drugiej"}
+  ],
+  LB: [
+    {n:"Pallof press", w:10, step:1.25, cap:18, r:"8–10/str", alt:"Dead bug"},
+    {n:"Dead bug (żebra w dół)", bw:true, r:"6–8/str", alt:"Bird dog"},
+    {n:"Deska bokiem na kolanie", bw:true, r:"20–30 s/str", alt:"Spacer farmerski"}
   ]
 };
 
@@ -267,45 +288,67 @@ const NUTRITION = [
 
 function esc(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m]))}
 function blockOf(w){return BLOCKS.find(b=>w>=b.weeks[0]&&w<=b.weeks[1])}
-function extraSets(w){
-  if(w>=3 && w<=5) return 1;
-  if(w>=7 && w<=21) return 1;
-  if(w===6 || w>=22) return 0;
-  return 0;
-}
+function isDeload(w){return w===6 || w===28}
 function rirOf(w){
   if(w<=2) return "RIR 4";
   if(w<=4) return "RIR 3";
   if(w===5) return "RIR 2–3";
-  if(w===6) return "RIR 2 · tydzień lżejszy (bez dodatkowych serii)";
+  if(w===6) return "RIR 3 · deload: mniej serii i trochę lżejszy ciężar";
   if(w<=21) return "RIR 2";
-  return "RIR 2 · jakość ponad dokładanie serii";
+  if(w===28) return "RIR 3 · deload końcowy";
+  return "RIR 2 · jakość powtórzenia, bez dokładania serii";
 }
 function roundTo(v, step){
   if(!step) return 0;
   return Math.round(v/step)*step;
 }
+function loadPct(week){
+  if(week<=2) return 0;
+  if(week===6) return 0.10;
+  if(week<=5) return 0.08*(week-2);
+  if(week<=14) return 0.25 + (week-7)*(0.35/7);
+  if(week<=21) return 0.62 + (week-15)*(0.28/6);
+  if(week<=27) return 0.90 + (week-22)*0.016;
+  return 0.65;
+}
 function loadFor(ex, week){
-  if(!ex.step) return null;
-  const adds = Math.max(0, week-1);
-  let raw = ex.w + adds * (ex.step * (ex.step>=5?0.6:0.55));
-  if(week>=7) raw = ex.w + (week-1)*ex.step*0.65;
-  if(week>=15) raw = ex.w + (week-1)*ex.step*0.7;
-  const v = Math.min(ex.cap||raw, roundTo(raw, ex.step));
-  return v;
+  if(ex.bw) return "bw";
+  if(!ex.step && (ex.w==null)) return null;
+  if(!ex.step) return ex.w||null;
+  const span = (ex.cap??ex.w) - ex.w;
+  const raw = ex.w + span * loadPct(week);
+  return Math.min(ex.cap??raw, roundTo(raw, ex.step));
 }
 function fmtKg(v){
+  if(v==="bw") return "ciężar ciała";
   if(v==null) return "dobór wg RIR";
   return (Number.isInteger(v)?v:v.toFixed(1).replace(".",","))+" kg";
 }
+function repsFor(ex, week){
+  if(ex.r) return ex.r;
+  const b = blockOf(week).id;
+  if(ex.kind==="iso") return {A:"12–15",B:"10–12",C:"10–12",D:"12–15"}[b];
+  return {A:"8–10",B:"6–10",C:"6–8",D:"8–10"}[b];
+}
 function setsFor(ex, week, idx, dayId){
-  let s = ex.s0;
+  if(isDeload(week)) return 2;
+  const b = blockOf(week).id;
   const isLower = dayId==="LA"||dayId==="LB";
-  let extra = extraSets(week);
-  if(isLower && week>=15) extra = 0;
-  if(extra && idx<2) s += 1;
-  if(week===6 && s>ex.s0) s = ex.s0;
-  return s;
+  const main = ex.kind==="main" || idx<2;
+  if(b==="A") return week<=2 ? 2 : (main?3:2);
+  if(b==="B") return main?4:3;
+  if(b==="C"){
+    if(isLower) return main?3:2;
+    return main?4:3;
+  }
+  return 3;
+}
+function setsForCore(week){
+  if(isDeload(week)) return 2;
+  const b = blockOf(week).id;
+  if(b==="A") return 2;
+  if(b==="D") return 2;
+  return 3;
 }
 
 async function sha256(text){
@@ -341,7 +384,7 @@ function sessionOpen(dayId){
   return `<div class="ex"><div class="ex-top"><div class="ex-name">1. Wejście · kardio</div><div class="ex-load">5–7 min</div></div>
       <div class="alt">Rower, orbitrek albo lekki ergometr. Łatwy oddech. Rozgrzewasz barki i tułów, nie robisz osobnego treningu cardio.</div></div>
       <div class="ex"><div class="ex-top"><div class="ex-name">2. Mobilizacja</div><div class="ex-load">6–8 min</div></div>
-      <div class="alt">Krążenia ramion i łopatek. Band pull-apart albo face pull bez obciążenia 2×15. Otwieranie klatki o ławkę albo ścianę, barki w dół i w tył. Krążenie piersiowego odcinka na ławce. Bez forsowania bólu w barku.</div></div>
+      <div class="alt">Krążenia ramion i łopatek. Band pull-apart albo face pull bez obciążenia 2×15. Otwieranie klatki o ławkę albo ścianę, barki w dół i w tył. Krążenie piersiowego odcinka na ławce. Żebra w dół, broda lekko schowana, barki w dół i w tył — nie pogłębiaj garbu. Bez forsowania bólu w barku.</div></div>
       <div class="ex"><div class="ex-top"><div class="ex-name">3. Serie wejściowe</div><div class="ex-load">4–5 min</div></div>
       <div class="alt">Dwie lekkie serie pierwszego wyciskania (ok. 50% i 70% ciężaru roboczego). Potem serie zapisane poniżej.</div></div>`;
 }
@@ -351,21 +394,34 @@ function sessionClose(dayId){
   const extra = lower
     ? "Na końcu 1–2 min bardzo lekkiego krążenia bioder albo 90/90, bez rozciągania tyłu uda na siłę."
     : "Na końcu 1–2 min band pull-apart albo otwarcia klatki, barki luźno.";
-  return `<div class="ex"><div class="ex-top"><div class="ex-name">5. Zakończenie</div><div class="ex-load">4–6 min</div></div>
-      <div class="alt">Spokojny rower albo marsz 3–4 min, aż oddech wróci. ${extra} Zapisz serie w aplikacji, napij się wody i wyjdź. Całość od wejścia do wyjścia ma się zmieścić w 60–75 minut: wejście + mobilizacja + serie wejściowe ok. 16–20 min, trening właściwy ok. 40–50 min, zakończenie ok. 5 min.</div></div>`;
+  return `<div class="ex"><div class="ex-top"><div class="ex-name">6. Zakończenie</div><div class="ex-load">4–6 min</div></div>
+      <div class="alt">Spokojny rower albo marsz 3–4 min, aż oddech wróci. ${extra} Zapisz serie w aplikacji, napij się wody i wyjdź. Całość od wejścia do wyjścia ma się zmieścić w 60–75 minut: wejście + mobilizacja + serie wejściowe ok. 16–20 min, trening ok. 35–45 min, brzuch i postawa ok. 8 min, zakończenie ok. 5 min.</div></div>`;
 }
 
 function renderWorkouts(week){
   return DAYS.map(day=>{
-    const list = sessionOpen(day.id) + `<div class="ex"><div class="ex-top"><div class="ex-name">4. Trening właściwy</div></div></div>` + EX[day.id].map((ex,i)=>{
+    const lifts = EX[day.id].map((ex,i)=>{
       const kg = loadFor(ex, week);
       const sets = setsFor(ex, week, i, day.id);
       return `<div class="ex">
         <div class="ex-top"><div class="ex-name">${esc(ex.n)}</div><div class="ex-load">${esc(fmtKg(kg))}</div></div>
-        <div class="chips"><span class="chip">${sets} × ${esc(ex.r)}</span><span class="chip">${esc(rirOf(week).split("·")[0].trim())}</span><span class="chip">tempo 3-0-1-0</span></div>
+        <div class="chips"><span class="chip">${sets} × ${esc(repsFor(ex, week))}</span><span class="chip">${esc(rirOf(week).split("·")[0].trim())}</span><span class="chip">tempo 3-0-1-0</span></div>
         <div class="alt">Zamiennik: ${esc(ex.alt)}</div>
       </div>`;
     }).join("");
+    const core = CORE[day.id].map(ex=>{
+      const kg = loadFor(ex, week);
+      const sets = setsForCore(week);
+      return `<div class="ex">
+        <div class="ex-top"><div class="ex-name">${esc(ex.n)}</div><div class="ex-load">${esc(fmtKg(kg))}</div></div>
+        <div class="chips"><span class="chip">${sets} × ${esc(ex.r)}</span><span class="chip">brzuch i postawa</span></div>
+        <div class="alt">Zamiennik: ${esc(ex.alt)}</div>
+      </div>`;
+    }).join("");
+    const list = sessionOpen(day.id)
+      + `<div class="ex"><div class="ex-top"><div class="ex-name">4. Trening właściwy</div></div></div>` + lifts
+      + `<div class="ex"><div class="ex-top"><div class="ex-name">5. Brzuch i postawa</div></div>
+        <div class="alt">Nie robisz ciężkich spięć tułowia. Tu przypominasz żebrom, żeby nie uciekały w przód, i łopatkom, żeby nie zostawały w garbie. Ruch spokojny, bez wstrzymywania oddechu.</div></div>` + core;
     return `<article class="card"><h3>${esc(day.label)} · ${esc(day.name)}</h3>${list}${sessionClose(day.id)}</article>`;
   }).join("");
 }
@@ -397,16 +453,17 @@ function renderPlan(week){
       <p>1. Kardio wejściowe 5–7 min — rower albo orbitrek, łatwy oddech.</p>
       <p>2. Mobilizacja 6–8 min — biodra, tył uda i czworogłowy w dniach dolnych (bez siadu na piętach), klatka i łopatki w dniach górnych. Zakres tylko do komfortu.</p>
       <p>3. Serie wejściowe 4–5 min — dwie lekkie serie pierwszego ćwiczenia.</p>
-      <p>4. Trening właściwy ok. 40–50 min — przerwy 90–120 s na głównych ruchach, 60–75 s na izolacjach.</p>
-      <p>5. Zakończenie 4–6 min — spokojny rower albo marsz i zapis serii.</p>
+      <p>4. Trening właściwy ok. 35–45 min — przerwy 90–120 s na głównych ruchach, 60–75 s na izolacjach.</p>
+      <p>5. Brzuch i postawa ok. 8 min — dead bug, Pallof albo face pull i deska bokiem. Bez ciężkich spięć, które pogrubiają talię.</p>
+      <p>6. Zakończenie 4–6 min — spokojny rower albo marsz i zapis serii.</p>
     </div>
     <div class="card">
       <h2>Jak dokładać ciężar</h2>
-      <p>Jeśli wszystkie serie weszły czysto przy zaplanowanym RIR, następnym razem dołóż minimalny stopień (zwykle 2,5 kg na sztandze, 1–2 kg na hantlu). Nie dokładaj, gdy technika się sypie albo RIR jest niższe niż w planie. Tydzień 6 jest lżejszy objętościowo.</p>
+      <p>Ciężar w planie rośnie od startu (tydzień 1–2) do okolic ostatnich wyników z dziennika około tygodnia 21. Tydzień 1 nie jest kopią tygodnia 24: na starcie są 2 serie i RIR 4, w bloku B główne ruchy mają 4 serie, w bloku C więcej serii ma góra, a tydzień 24 to 3 serie przy wyraźnie wyższym ciężarze. Tygodnie 6 i 28 są lżejsze. Jeśli wszystkie serie weszły czysto przy zaplanowanym RIR, możesz dołożyć minimalny stopień wcześniej. Nie dokładaj, gdy tułów się garbi, kolano się odzywa albo RIR spada poniżej planu.</p>
     </div>
     <div class="card">
       <h2>Dlaczego ten zestaw</h2>
-      <p>Nie chodzi o konkretną nazwę przysiadu, tylko o mechanikę: schodzisz tylko do wysokości, w której kolano jest wygodne (boks, piny, goblet albo hack — byle nie na pełną głębokość). Dół w blokach A–B odrabia zaległości, ale bez gonienia dużych nóg; od bloku C dodatkowe serie idą tylko na górę. Góra celuje w V-taper: skos, dipy, szerokie ściąganie, wiosła z podparciem, częste wznosy i face pull. Wyciskanie nad głowę jest siedząc z oparciem, żeby tułów nie uciekał w zaokrąglenie. Przed dołem jest osobna rozgrzewka bioder, tyłu uda i czworogłowego: nie siadasz na piętach i nie pogłębiasz zgięcia kolana do uczucia kulki pod rzepką. Zakres rośnie z komfortem, nie z ciężarem, a RDL nie goni rozciągnięcia na dole. Core to Pallof i spacer, nie ciężkie spięcia tułowia. Wizyta jest ułożona od wejścia do wyjścia: lekkie kardio, mobilizacja, serie wejściowe, 6–7 ćwiczeń i krótkie zejście z tętna. Całość ma się zmieścić w 60–75 minut.</p>
+      <p>Bloki różnią się objętością, powtórzeniami i ciężarem, nie tylko nazwą. Startowe ciężary są zestandaryzowane względem ostatnich serii z dziennika: wyciskanie leżąc zaczyna od 85 kg (ostatnie 105×6), skos od 32 kg (ostatnie 38 kg), hip thrust od 90 kg (ostatnie 150×12), RDL od 60 kg — niżej niż ostatnie 110 kg, bo zawias nie może ciągnąć zaokrąglonych pleców. Dipy zaczynają od +10 kg, przysiad do wygodnej wysokości od 40 kg (założenie, nie było zapisu box squatu). Na miękki brzuch i garbienie jest osobna część każdej jednostki: dead bug z żebrami w dół, Pallof, face pull, wznosy Y i krótka deska bokiem albo spacer farmerski. Nie ma ciężkich crunchy. Przysiad zostaje w krótkim zakresie, bez siadu na piętach.</p>
     </div>
     ${renderWorkouts(week)}`;
   fillWeekbar("weekbar-p", week);
