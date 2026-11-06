@@ -197,7 +197,12 @@ th{color:var(--text-2);font-weight:500}
 </div>
 <div id="toast" role="status"></div>
 <script>
-const PASS_HASH = "c1360e1e6464575b4a7def045c58110e66396dbb0d36146da5c73c30f6a2a5b1";
+const PASS_HASHES = [
+  "c1360e1e6464575b4a7def045c58110e66396dbb0d36146da5c73c30f6a2a5b1",
+  "cf38de9eacd53557b64a0a30134d6b663e6b4e6dc3c604a868455759f16256c3",
+  "ca0769bfd5099df4a6e3bece2d0a45b7e4e546ee3b9593a4a6b1fd0e5c2eb13c",
+  "75626baf6fcea173a779f3f902c821c390763d98c478c8c40199028c23d5cfcc"
+];
 const LS = {
   gate: "plan28-ok",
   theme: "plan28-theme",
@@ -637,9 +642,9 @@ function openApp(){
 
 document.getElementById("lock-form").addEventListener("submit", async e=>{
   e.preventDefault();
-  const val=document.getElementById("pw").value||"";
+  const val=(document.getElementById("pw").value||"").trim();
   const hash=await sha256(val);
-  if(hash===PASS_HASH){
+  if(PASS_HASHES.includes(hash)){
     sessionStorage.setItem(LS.gate,"1");
     document.getElementById("pw-err").textContent="";
     openApp();
