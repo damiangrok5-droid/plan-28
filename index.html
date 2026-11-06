@@ -233,7 +233,7 @@ const EX = {
   ],
   LA: [
     {n:"Hip thrust", s0:3, r:"8–10", w:100, step:5, cap:165, alt:"Mostek z hantlem"},
-    {n:"Martwy ciąg rumuński", s0:3, r:"6–8", w:80, step:2.5, cap:120, alt:"RDL z hantlami albo prostowanie tułowia 45°"},
+    {n:"RDL z kontrolowanym zakresem", s0:3, r:"6–8", w:80, step:2.5, cap:120, alt:"Prostowanie tułowia 45° z lekko ugiętymi kolanami"},
     {n:"Leg press (zatrzymaj zakres zanim kolano przestanie być wygodne)", s0:3, r:"10–12", w:140, step:5, cap:210, alt:"Hack tylko do tej samej, wygodnej wysokości"},
     {n:"Uginanie ud siedząc", s0:2, r:"10–12", w:70, step:2.5, cap:100, alt:"Uginanie ud leżąc"},
     {n:"Wspięcia na palce siedząc", s0:2, r:"10–15", w:35, step:2.5, cap:55, alt:"Wspięcia stojąc"},
@@ -328,9 +328,18 @@ function setWeek(w){
   renderAll();
 }
 
+function warmupFor(dayId){
+  if(dayId==="LA"||dayId==="LB"){
+    return `<div class="ex"><div class="ex-top"><div class="ex-name">Rozgrzewka dołu · 8–10 min</div></div>
+      <div class="alt">Marsz albo rower 3–4 min. Potem krążenia bioder, 90/90 albo siedzenie ze stopą na kolanie, wypady w miejscu bez pogłębiania i 2 lekkie serie przysiadu do tej samej wygodnej wysokości. Tył uda rozluźniasz ruchem, nie szarpaniem do bólu. Zakres w seriach roboczych kończysz, zanim pojawi się ciągnięcie albo ucieczka tułowia.</div></div>`;
+  }
+  return `<div class="ex"><div class="ex-top"><div class="ex-name">Rozgrzewka góry · 6–8 min</div></div>
+      <div class="alt">Ergometr albo marsz 2–3 min. Krążenia ramion, band pull-apart albo face pull bez obciążenia, 2 lekkie serie pierwszego wyciskania. Klatkę otwierasz, barki schodzisz w dół i w tył zanim weźmiesz ciężar.</div></div>`;
+}
+
 function renderWorkouts(week){
   return DAYS.map(day=>{
-    const list = EX[day.id].map((ex,i)=>{
+    const list = warmupFor(day.id) + EX[day.id].map((ex,i)=>{
       const kg = loadFor(ex, week);
       const sets = setsFor(ex, week, i, day.id);
       return `<div class="ex">
@@ -371,7 +380,7 @@ function renderPlan(week){
     </div>
     <div class="card">
       <h2>Dlaczego ten zestaw</h2>
-      <p>Nie chodzi o konkretną nazwę przysiadu, tylko o mechanikę: schodzisz tylko do wysokości, w której kolano jest wygodne (boks, piny, goblet albo hack — byle nie na pełną głębokość). Dół w blokach A–B odrabia zaległości, ale bez gonienia dużych nóg; od bloku C dodatkowe serie idą tylko na górę. Góra celuje w V-taper: skos, dipy, szerokie ściąganie, wiosła z podparciem, częste wznosy i face pull. Wyciskanie nad głowę jest siedząc z oparciem, żeby tułów nie uciekał w zaokrąglenie. Core to Pallof i spacer, nie ciężkie spięcia tułowia. Sesja ma 6–7 ćwiczeń, żeby zmieścić się w 60–75 minut.</p>
+      <p>Nie chodzi o konkretną nazwę przysiadu, tylko o mechanikę: schodzisz tylko do wysokości, w której kolano jest wygodne (boks, piny, goblet albo hack — byle nie na pełną głębokość). Dół w blokach A–B odrabia zaległości, ale bez gonienia dużych nóg; od bloku C dodatkowe serie idą tylko na górę. Góra celuje w V-taper: skos, dipy, szerokie ściąganie, wiosła z podparciem, częste wznosy i face pull. Wyciskanie nad głowę jest siedząc z oparciem, żeby tułów nie uciekał w zaokrąglenie. Przed dołem jest osobna rozgrzewka bioder i tyłu uda: zakres rośnie z komfortem, nie z ciężarem, a RDL nie goni rozciągnięcia na dole. Core to Pallof i spacer, nie ciężkie spięcia tułowia. Sesja ma 6–7 ćwiczeń, żeby zmieścić się w 60–75 minut.</p>
     </div>
     ${renderWorkouts(week)}`;
   fillWeekbar("weekbar-p", week);
