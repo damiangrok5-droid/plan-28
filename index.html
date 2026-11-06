@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="light dark">
-<meta name="theme-color" content="#f2f2f7" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#efe6d6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0c0b09" media="(prefers-color-scheme: dark)">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="description" content="Plan treningowy na 28 tygodni">
@@ -28,30 +28,30 @@ try{const t=localStorage.getItem('plan28-theme');if(t==='light'||t==='dark')docu
   --blur:saturate(180%) blur(20px);
 }
 :root,:root[data-theme="light"]{
-  --bg:#f2f2f7;--bg-elev:#ffffff;
-  --surface:rgba(255,255,255,.72);--surface-solid:#ffffff;
-  --bar:rgba(242,242,247,.78);--bar-solid:#f2f2f7;
-  --field:rgba(118,118,128,.12);--sep:rgba(60,60,67,.18);
-  --text:#1c1c1e;--text-2:#636366;
-  --accent:#007aff;--accent-text:#0062cc;--accent-fill:#0071e3;--on-accent:#ffffff;
-  --ok:#34c759;--ok-text:#11702c;--warn:#ff9500;--warn-text:#9a5300;--bad:#ff3b30;--bad-text:#c4251c;
-  --shadow:0 1px 2px rgba(0,0,0,.05),0 8px 24px rgba(0,0,0,.06);
+  --bg:#efe6d6;--bg-elev:#fffaf2;
+  --surface:rgba(255,250,242,.78);--surface-solid:#fffaf2;
+  --bar:rgba(239,230,214,.82);--bar-solid:#efe6d6;
+  --field:rgba(92,68,32,.10);--sep:rgba(70,52,28,.18);
+  --text:#1c1812;--text-2:#6b5c48;
+  --accent:#8a6420;--accent-text:#6b4c14;--accent-fill:#5c4010;--on-accent:#fff8eb;
+  --ok:#2f7d3a;--ok-text:#1d5a26;--warn:#c46a00;--warn-text:#8a4a00;--bad:#c4251c;--bad-text:#c4251c;
+  --shadow:0 1px 2px rgba(60,40,10,.06),0 12px 28px rgba(60,40,10,.08);
 }
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
-    --bg:#000;--bg-elev:#1c1c1e;--surface:rgba(28,28,30,.72);--surface-solid:#1c1c1e;
-    --bar:rgba(0,0,0,.72);--bar-solid:#0b0b0c;--field:rgba(118,118,128,.24);--sep:rgba(84,84,88,.6);
-    --text:#f5f5f7;--text-2:#98989f;--accent:#0a84ff;--accent-text:#4da3ff;--accent-fill:#0071e3;--on-accent:#fff;
+    --bg:#0c0b09;--bg-elev:#1a1714;--surface:rgba(26,23,20,.76);--surface-solid:#1a1714;
+    --bar:rgba(12,11,9,.78);--bar-solid:#0c0b09;--field:rgba(212,179,106,.14);--sep:rgba(212,179,106,.22);
+    --text:#f6f0e6;--text-2:#b6aa96;--accent:#d4b36a;--accent-text:#e0c48a;--accent-fill:#8a6420;--on-accent:#fff8eb;
     --ok:#30d158;--ok-text:#30d158;--warn:#ff9f0a;--warn-text:#ffb340;--bad:#ff453a;--bad-text:#ff6961;
-    --shadow:0 8px 28px rgba(0,0,0,.5);
+    --shadow:0 10px 32px rgba(0,0,0,.55);
   }
 }
 :root[data-theme="dark"]{
-  --bg:#000;--bg-elev:#1c1c1e;--surface:rgba(28,28,30,.72);--surface-solid:#1c1c1e;
-  --bar:rgba(0,0,0,.72);--bar-solid:#0b0b0c;--field:rgba(118,118,128,.24);--sep:rgba(84,84,88,.6);
-  --text:#f5f5f7;--text-2:#98989f;--accent:#0a84ff;--accent-text:#4da3ff;--accent-fill:#0071e3;--on-accent:#fff;
+  --bg:#0c0b09;--bg-elev:#1a1714;--surface:rgba(26,23,20,.76);--surface-solid:#1a1714;
+  --bar:rgba(12,11,9,.78);--bar-solid:#0c0b09;--field:rgba(212,179,106,.14);--sep:rgba(212,179,106,.22);
+  --text:#f6f0e6;--text-2:#b6aa96;--accent:#d4b36a;--accent-text:#e0c48a;--accent-fill:#8a6420;--on-accent:#fff8eb;
   --ok:#30d158;--ok-text:#30d158;--warn:#ff9f0a;--warn-text:#ffb340;--bad:#ff453a;--bad-text:#ff6961;
-  --shadow:0 8px 28px rgba(0,0,0,.5);
+  --shadow:0 10px 32px rgba(0,0,0,.55);
 }
 *,*::before,*::after{box-sizing:border-box}
 html{-webkit-text-size-adjust:100% }
@@ -70,15 +70,19 @@ button{border:0;background:none;cursor:pointer}
 @media (prefers-reduced-transparency:reduce){.glass{background:var(--surface-solid);-webkit-backdrop-filter:none;backdrop-filter:none}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 body{background:
-  radial-gradient(1200px 480px at 10% -10%, color-mix(in srgb, var(--accent) 14%, transparent), transparent 55%),
-  radial-gradient(900px 420px at 110% 0%, color-mix(in srgb, var(--ok) 10%, transparent), transparent 50%),
+  radial-gradient(1100px 460px at 8% -12%, color-mix(in srgb, var(--accent) 18%, transparent), transparent 58%),
+  radial-gradient(800px 380px at 110% 8%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 52%),
   var(--bg);
 }
-#lock{position:fixed;inset:0;z-index:var(--z-overlay);display:grid;place-items:center;padding:24px;background:var(--bg)}
+#lock{position:fixed;inset:0;z-index:var(--z-overlay);display:grid;place-items:end center;padding:24px 24px calc(28px + env(safe-area-inset-bottom));background:#0c0b09 url("img/hero.jpg") center/cover no-repeat}
+#lock::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(12,11,9,.25) 0%,rgba(12,11,9,.72) 55%,rgba(12,11,9,.88) 100%)}
 #lock.hidden{display:none}
-.lock-card{width:min(400px,100%);padding:28px 24px;border-radius:var(--r-xl)}
+.lock-card{position:relative;z-index:1;width:min(400px,100%);padding:28px 24px;border-radius:var(--r-xl);background:rgba(22,18,14,.78);color:#f6f0e6;border:1px solid rgba(212,179,106,.35)}
 .lock-card h1{margin:0 0 8px;font-size:var(--fs-title1);letter-spacing:-.02em;text-wrap:balance;font-weight:700}
-.lock-card p{margin:0 0 20px;color:var(--text-2);font-size:var(--fs-sub)}
+.lock-card p{margin:0 0 20px;color:#c9bda8;font-size:var(--fs-sub)}
+.lock-card .field span{color:#c9bda8}
+.lock-card input{background:rgba(255,248,235,.1);border-color:rgba(212,179,106,.35);color:#f6f0e6}
+.lock-kicker{display:block;margin:0 0 8px;font-size:var(--fs-caption);letter-spacing:.14em;text-transform:uppercase;color:#d4b36a;font-weight:600}
 .btn{min-height:var(--tap);padding:12px 18px;border-radius:var(--r-md);font-weight:600}
 .btn:active{transform:scale(.97);transition:transform var(--t-fast) var(--ease)}
 .btn-primary{background:var(--accent-fill);color:var(--on-accent);width:100% }
@@ -137,11 +141,23 @@ th{color:var(--text-2);font-weight:500}
 #toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--bg-elev);border:1px solid var(--sep);border-radius:var(--r-pill);padding:10px 16px;z-index:var(--z-toast);display:none}
 #toast.on{display:block}
 .err{color:var(--bad-text);font-size:var(--fs-footnote);min-height:1.2em;margin:8px 0 0}
+
+.ex{display:flex;gap:12px;align-items:flex-start}
+.ex-media{width:76px;height:76px;border-radius:var(--r-md);object-fit:cover;flex:0 0 76px;background:var(--field)}
+.ex-body{min-width:0;flex:1}
+.week-hero{position:relative;border-radius:var(--r-lg);overflow:hidden;margin:0 0 12px;min-height:168px;background:#1a1714}
+.week-hero img{display:block;width:100%;height:168px;object-fit:cover}
+.week-hero-cap{position:absolute;inset:auto 0 0 0;padding:28px 16px 16px;background:linear-gradient(180deg,transparent,rgba(12,11,9,.82));color:#f6f0e6}
+.week-hero-cap h2{margin:0 0 4px;color:#f6f0e6;font-size:var(--fs-title2)}
+.week-hero-cap p{margin:0;color:#d2c6b0}
+.card{box-shadow:var(--shadow)}
+.tabs button{font-size:12px}
 </style>
 </head>
 <body>
 <div id="lock">
   <form class="lock-card glass" id="lock-form" autocomplete="off">
+    <span class="lock-kicker">Siłownia</span>
     <h1>Plan 28</h1>
     <p>Program treningowy, dieta i notatki. Wpisz hasło, żeby otworzyć.</p>
     <label class="field">
@@ -292,6 +308,31 @@ const NUTRITION = [
 ];
 
 function esc(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m]))}
+function imgFor(name){
+  const n = String(name).toLowerCase();
+  if(/kardio|wejście/.test(n)) return "run.jpg";
+  if(/mobiliz|zakończ/.test(n)) return "stretch.jpg";
+  if(/serie wejściowe|trening właściwy/.test(n)) return "plates.jpg";
+  if(/przysiad/.test(n)) return "rack.jpg";
+  if(/skos|rozpiętk|wyciskanie sztangi leż/.test(n)) return "db-press.jpg";
+  if(/ściąganie drążka|podciąg/.test(n)) return "pullup.jpg";
+  if(/dipy|pompki/.test(n)) return "push.jpg";
+  if(/hip thrust|rdl|prostowanie tułowia/.test(n)) return "hiphinge.jpg";
+  if(/leg press|uginanie ud|wspięc|wypad|prostowanie nóg|odwodzenie/.test(n)) return "legs.jpg";
+  if(/dead bug|deska|brzuch i postawa/.test(n)) return "plank.jpg";
+  if(/wznosy y/.test(n)) return "stretch.jpg";
+  if(/spacer farmerski/.test(n)) return "plates.jpg";
+  if(/wiosł|wyciąg|face pull|pallof|prostowanie na wyciągu/.test(n)) return "cable.jpg";
+  if(/wznosy|uginanie|wyciskanie hantli siedz/.test(n)) return "dumbbells.jpg";
+  return "club.jpg";
+}
+function exThumb(name){
+  return `<img class="ex-media" src="img/${imgFor(name)}" width="76" height="76" alt="${esc(name)}" loading="lazy" decoding="async">`;
+}
+function exHead(name, load){
+  const loadHtml = load ? `<div class="ex-load">${load}</div>` : "";
+  return `<div class="ex">${exThumb(name)}<div class="ex-body"><div class="ex-top"><div class="ex-name">${esc(name)}</div>${loadHtml}</div>`;
+}
 function blockOf(w){return BLOCKS.find(b=>w>=b.weeks[0]&&w<=b.weeks[1])}
 function isDeload(w){return w===6 || w===28}
 function rirOf(w){
@@ -379,19 +420,19 @@ function setWeek(w){
 function sessionOpen(dayId){
   const lower = dayId==="LA"||dayId==="LB";
   if(lower){
-    return `<div class="ex"><div class="ex-top"><div class="ex-name">1. Wejście · kardio</div><div class="ex-load">5–7 min</div></div>
-      <div class="alt">Rower stacjonarny albo orbitrek, łatwy oddech, bez zadyszki. Cel: ciepło w biodrach i kolanach, nie trening wytrzymałości.</div></div>
-      <div class="ex"><div class="ex-top"><div class="ex-name">2. Mobilizacja</div><div class="ex-load">6–8 min</div></div>
-      <div class="alt">Krążenia bioder w obie strony. 90/90 albo figura czwórki (stopa na kolanie) bez dociskania. Wypad w miejscu tylko do wygodnej wysokości — nie siadasz na pięcie. Stojąc, lekko zbliż piętę do pośladka tylko do pierwszego napięcia czworogłowego, bez dociskania. Delikatne kiwanie biodrem w przysiadzie do tej samej wygodnej wysokości, bez sprężynowania. Tył uda ruszasz w kontrolowanym zawiasie z ugiętymi kolanami. Zgięcie kolana kończysz, zanim pojawi się ucisk albo uczucie kulki pod rzepką.</div></div>
-      <div class="ex"><div class="ex-top"><div class="ex-name">3. Serie wejściowe</div><div class="ex-load">4–5 min</div></div>
-      <div class="alt">Dwie lekkie serie pierwszego ćwiczenia dnia (ok. 50% i 70% ciężaru roboczego), pełna kontrola zakresu. Potem zaczynasz serie zapisane poniżej.</div></div>`;
+    return `${exHead("1. Wejście · kardio","5–7 min")}
+      <div class="alt">Rower stacjonarny albo orbitrek, łatwy oddech, bez zadyszki. Cel: ciepło w biodrach i kolanach, nie trening wytrzymałości.</div></div></div>
+      ${exHead("2. Mobilizacja","6–8 min")}
+      <div class="alt">Krążenia bioder w obie strony. 90/90 albo figura czwórki (stopa na kolanie) bez dociskania. Wypad w miejscu tylko do wygodnej wysokości — nie siadasz na pięcie. Stojąc, lekko zbliż piętę do pośladka tylko do pierwszego napięcia czworogłowego, bez dociskania. Delikatne kiwanie biodrem w przysiadzie do tej samej wygodnej wysokości, bez sprężynowania. Tył uda ruszasz w kontrolowanym zawiasie z ugiętymi kolanami. Zgięcie kolana kończysz, zanim pojawi się ucisk albo uczucie kulki pod rzepką.</div></div></div>
+      ${exHead("3. Serie wejściowe","4–5 min")}
+      <div class="alt">Dwie lekkie serie pierwszego ćwiczenia dnia (ok. 50% i 70% ciężaru roboczego), pełna kontrola zakresu. Potem zaczynasz serie zapisane poniżej.</div></div></div>`;
   }
-  return `<div class="ex"><div class="ex-top"><div class="ex-name">1. Wejście · kardio</div><div class="ex-load">5–7 min</div></div>
-      <div class="alt">Rower, orbitrek albo lekki ergometr. Łatwy oddech. Rozgrzewasz barki i tułów, nie robisz osobnego treningu cardio.</div></div>
-      <div class="ex"><div class="ex-top"><div class="ex-name">2. Mobilizacja</div><div class="ex-load">6–8 min</div></div>
-      <div class="alt">Krążenia ramion i łopatek. Band pull-apart albo face pull bez obciążenia 2×15. Otwieranie klatki o ławkę albo ścianę, barki w dół i w tył. Krążenie piersiowego odcinka na ławce. Żebra w dół, broda lekko schowana, barki w dół i w tył — nie pogłębiaj garbu. Bez forsowania bólu w barku.</div></div>
-      <div class="ex"><div class="ex-top"><div class="ex-name">3. Serie wejściowe</div><div class="ex-load">4–5 min</div></div>
-      <div class="alt">Dwie lekkie serie pierwszego wyciskania (ok. 50% i 70% ciężaru roboczego). Potem serie zapisane poniżej.</div></div>`;
+  return `${exHead("1. Wejście · kardio","5–7 min")}
+      <div class="alt">Rower, orbitrek albo lekki ergometr. Łatwy oddech. Rozgrzewasz barki i tułów, nie robisz osobnego treningu cardio.</div></div></div>
+      ${exHead("2. Mobilizacja","6–8 min")}
+      <div class="alt">Krążenia ramion i łopatek. Band pull-apart albo face pull bez obciążenia 2×15. Otwieranie klatki o ławkę albo ścianę, barki w dół i w tył. Krążenie piersiowego odcinka na ławce. Żebra w dół, broda lekko schowana, barki w dół i w tył — nie pogłębiaj garbu. Bez forsowania bólu w barku.</div></div></div>
+      ${exHead("3. Serie wejściowe","4–5 min")}
+      <div class="alt">Dwie lekkie serie pierwszego wyciskania (ok. 50% i 70% ciężaru roboczego). Potem serie zapisane poniżej.</div></div></div>`;
 }
 
 function sessionClose(dayId){
@@ -399,8 +440,8 @@ function sessionClose(dayId){
   const extra = lower
     ? "Na końcu 1–2 min bardzo lekkiego krążenia bioder albo 90/90, bez rozciągania tyłu uda na siłę."
     : "Na końcu 1–2 min band pull-apart albo otwarcia klatki, barki luźno.";
-  return `<div class="ex"><div class="ex-top"><div class="ex-name">6. Zakończenie</div><div class="ex-load">4–6 min</div></div>
-      <div class="alt">Spokojny rower albo marsz 3–4 min, aż oddech wróci. ${extra} Zapisz serie w aplikacji, napij się wody i wyjdź. Całość od wejścia do wyjścia ma się zmieścić w 60–75 minut: wejście + mobilizacja + serie wejściowe ok. 16–20 min, trening ok. 35–45 min, brzuch i postawa ok. 8 min, zakończenie ok. 5 min.</div></div>`;
+  return `${exHead("6. Zakończenie","4–6 min")}
+      <div class="alt">Spokojny rower albo marsz 3–4 min, aż oddech wróci. ${extra} Zapisz serie w aplikacji, napij się wody i wyjdź. Całość od wejścia do wyjścia ma się zmieścić w 60–75 minut: wejście + mobilizacja + serie wejściowe ok. 16–20 min, trening ok. 35–45 min, brzuch i postawa ok. 8 min, zakończenie ok. 5 min.</div></div></div>`;
 }
 
 function renderWorkouts(week){
@@ -408,25 +449,23 @@ function renderWorkouts(week){
     const lifts = EX[day.id].map((ex,i)=>{
       const kg = loadFor(ex, week);
       const sets = setsFor(ex, week, i, day.id);
-      return `<div class="ex">
-        <div class="ex-top"><div class="ex-name">${esc(ex.n)}</div><div class="ex-load">${esc(fmtKg(kg))}</div></div>
+      return `${exHead(ex.n, esc(fmtKg(kg)))}
         <div class="chips"><span class="chip">${sets} × ${esc(repsFor(ex, week))}</span><span class="chip">${esc(rirOf(week).split("·")[0].trim())}</span><span class="chip">tempo 3-0-1-0</span></div>
         <div class="alt">Zamiennik: ${esc(ex.alt)}</div>
-      </div>`;
+      </div></div>`;
     }).join("");
     const core = CORE[day.id].map(ex=>{
       const kg = loadFor(ex, week);
       const sets = setsForCore(week);
-      return `<div class="ex">
-        <div class="ex-top"><div class="ex-name">${esc(ex.n)}</div><div class="ex-load">${esc(fmtKg(kg))}</div></div>
+      return `${exHead(ex.n, esc(fmtKg(kg)))}
         <div class="chips"><span class="chip">${sets} × ${esc(ex.r)}</span><span class="chip">brzuch i postawa</span></div>
         <div class="alt">Zamiennik: ${esc(ex.alt)}</div>
-      </div>`;
+      </div></div>`;
     }).join("");
     const list = sessionOpen(day.id)
-      + `<div class="ex"><div class="ex-top"><div class="ex-name">4. Trening właściwy</div></div></div>` + lifts
-      + `<div class="ex"><div class="ex-top"><div class="ex-name">5. Brzuch i postawa</div></div>
-        <div class="alt">Nie robisz ciężkich spięć tułowia. Tu przypominasz żebrom, żeby nie uciekały w przód, i łopatkom, żeby nie zostawały w garbie. Ruch spokojny, bez wstrzymywania oddechu.</div></div>` + core;
+      + `${exHead("4. Trening właściwy","")}</div></div>` + lifts
+      + `${exHead("5. Brzuch i postawa","")}
+        <div class="alt">Nie robisz ciężkich spięć tułowia. Tu przypominasz żebrom, żeby nie uciekały w przód, i łopatkom, żeby nie zostawały w garbie. Ruch spokojny, bez wstrzymywania oddechu.</div></div></div>` + core;
     return `<article class="card"><h3>${esc(day.label)} · ${esc(day.name)}</h3>${list}${sessionClose(day.id)}</article>`;
   }).join("");
 }
@@ -434,9 +473,15 @@ function renderWorkouts(week){
 function renderWeek(week){
   const b = blockOf(week);
   document.getElementById("p-tydzien").innerHTML = `
+    <div class="week-hero">
+      <img src="img/club.jpg" width="920" height="168" alt="" decoding="async">
+      <div class="week-hero-cap">
+        <h2>Tydzień ${week} · blok ${esc(b.id)} · ${esc(b.name)}</h2>
+        <p>${esc(rirOf(week))}</p>
+      </div>
+    </div>
     <div class="card">
-      <h2>Tydzień ${week} · blok ${esc(b.id)} · ${esc(b.name)}</h2>
-      <p class="muted">${esc(rirOf(week))}. ${esc(b.note)}</p>
+      <p class="muted">${esc(b.note)}</p>
       <p class="muted">Sobota Upper A, niedziela Lower A, wtorek Upper B, czwartek Lower B. Tydzień zaczyna się od góry w sobotę. Każda wizyta: kardio 5–7 min → mobilizacja 6–8 min → serie wejściowe → trening → 4–6 min zakończenia. Poniedziałek, środa i piątek: spacer 25–40 min.</p>
     </div>
     <div class="weekbar" id="weekbar-t"></div>
