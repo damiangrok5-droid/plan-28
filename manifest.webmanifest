@@ -1,0 +1,8 @@
+{
+  "name": "Plan 28",
+  "short_name": "Plan 28",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000"
+}
