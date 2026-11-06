@@ -54,10 +54,10 @@ try{const t=localStorage.getItem('plan28-theme');if(t==='light'||t==='dark')docu
   --shadow:0 8px 28px rgba(0,0,0,.5);
 }
 *,*::before,*::after{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%}
+html{-webkit-text-size-adjust:100% }
 body{margin:0;min-height:100vh;min-height:100dvh;font:400 var(--fs-body)/1.47 var(--font);color:var(--text);background:var(--bg);-webkit-font-smoothing:antialiased;overflow-x:clip;padding:0 env(safe-area-inset-right) 0 env(safe-area-inset-left)}
 button,input,select,textarea{font:inherit;color:inherit}
-input,select,textarea{font-size:max(16px,1em);background:var(--field);border:1px solid var(--sep);border-radius:var(--r-md);padding:12px 14px;width:100%}
+input,select,textarea{font-size:max(16px,1em);background:var(--field);border:1px solid var(--sep);border-radius:var(--r-md);padding:12px 14px;width:100% }
 a,button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 button{border:0;background:none;cursor:pointer}
 :focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:6px}
@@ -81,7 +81,7 @@ body{background:
 .lock-card p{margin:0 0 20px;color:var(--text-2);font-size:var(--fs-sub)}
 .btn{min-height:var(--tap);padding:12px 18px;border-radius:var(--r-md);font-weight:600}
 .btn:active{transform:scale(.97);transition:transform var(--t-fast) var(--ease)}
-.btn-primary{background:var(--accent-fill);color:var(--on-accent);width:100%}
+.btn-primary{background:var(--accent-fill);color:var(--on-accent);width:100% }
 .btn-ghost{background:var(--field);color:var(--text)}
 .app{display:none;padding-bottom:calc(84px + env(safe-area-inset-bottom))}
 .app.on{display:block}
@@ -215,10 +215,10 @@ const BLOCKS = [
 ];
 
 const DAYS = [
-  {id:"UA", name:"Upper A", wd:1, label:"Poniedziałek"},
-  {id:"LA", name:"Lower A", wd:2, label:"Wtorek"},
-  {id:"UB", name:"Upper B", wd:4, label:"Czwartek"},
-  {id:"LB", name:"Lower B", wd:6, label:"Sobota"}
+  {id:"UA", name:"Upper A", wd:6, label:"Sobota"},
+  {id:"LA", name:"Lower A", wd:0, label:"Niedziela"},
+  {id:"UB", name:"Upper B", wd:2, label:"Wtorek"},
+  {id:"LB", name:"Lower B", wd:4, label:"Czwartek"}
 ];
 
 const EX = {
@@ -376,7 +376,7 @@ function renderWeek(week){
     <div class="card">
       <h2>Tydzień ${week} · blok ${esc(b.id)} · ${esc(b.name)}</h2>
       <p class="muted">${esc(rirOf(week))}. ${esc(b.note)}</p>
-      <p class="muted">Poniedziałek Upper A, wtorek Lower A, czwartek Upper B, sobota Lower B. Każda wizyta: kardio 5–7 min → mobilizacja 6–8 min → serie wejściowe → trening → 4–6 min zakończenia. Środa, piątek i niedziela: spacer 25–40 min.</p>
+      <p class="muted">Sobota Upper A, niedziela Lower A, wtorek Upper B, czwartek Lower B. Tydzień zaczyna się od góry w sobotę. Każda wizyta: kardio 5–7 min → mobilizacja 6–8 min → serie wejściowe → trening → 4–6 min zakończenia. Poniedziałek, środa i piątek: spacer 25–40 min.</p>
     </div>
     <div class="weekbar" id="weekbar-t"></div>
     ${renderWorkouts(week)}`;
