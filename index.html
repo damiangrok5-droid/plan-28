@@ -234,7 +234,7 @@ const EX = {
   LA: [
     {n:"Hip thrust", s0:3, r:"8–10", w:100, step:5, cap:165, alt:"Mostek z hantlem"},
     {n:"RDL z kontrolowanym zakresem", s0:3, r:"6–8", w:80, step:2.5, cap:120, alt:"Prostowanie tułowia 45° z lekko ugiętymi kolanami"},
-    {n:"Leg press (zatrzymaj zakres zanim kolano przestanie być wygodne)", s0:3, r:"10–12", w:140, step:5, cap:210, alt:"Hack tylko do tej samej, wygodnej wysokości"},
+    {n:"Leg press (stopy trochę wyżej, bez głębokiego zgięcia)", s0:3, r:"10–12", w:140, step:5, cap:210, alt:"Hack tylko do tej samej, wygodnej wysokości"},
     {n:"Uginanie ud siedząc", s0:2, r:"10–12", w:70, step:2.5, cap:100, alt:"Uginanie ud leżąc"},
     {n:"Wspięcia na palce siedząc", s0:2, r:"10–15", w:35, step:2.5, cap:55, alt:"Wspięcia stojąc"},
     {n:"Pallof press", s0:2, r:"8–10/str", w:0, step:0, cap:0, alt:"Dead bug"}
@@ -249,9 +249,9 @@ const EX = {
     {n:"Prostowanie na wyciągu + uginanie młotkowe", s0:2, r:"10–12", w:25, step:2.5, cap:40, alt:"Wyciskanie francuskie / uginanie na ławce skośnej"}
   ],
   LB: [
-    {n:"Przysiad do wygodnej wysokości", s0:3, r:"6–8", w:50, step:2.5, cap:100, alt:"Box squat, goblet do skrzyni albo hack bez schodzenia najniżej"},
-    {n:"Odwrotny wypad (ten sam krótki, wygodny zakres)", s0:2, r:"8/nogę", w:12, step:2, cap:28, alt:"Niski step-up"},
-    {n:"Prostowanie nóg siedząc", s0:2, r:"10–12", w:40, step:2.5, cap:70, alt:"Leg press wąsko, bez pełnej głębokości"},
+    {n:"Przysiad do wygodnej wysokości", s0:3, r:"6–8", w:50, step:2.5, cap:100, alt:"Box squat, goblet do skrzyni albo hack — nigdy do siadu na piętach"},
+    {n:"Odwrotny wypad (krótki krok, kolano nie wychodzi mocno w przód)", s0:2, r:"8/nogę", w:12, step:2, cap:28, alt:"Niski step-up, bez siadania w głęboki zakres"},
+    {n:"Prostowanie nóg siedząc (środkowy zakres)", s0:2, r:"10–12", w:40, step:2.5, cap:70, alt:"Jeśli pod rzepką pojawia się ucisk — odpuść i zostań przy leg pressie w wygodnym zakresie"},
     {n:"Prostowanie tułowia na ławce 45°", s0:3, r:"10–12", w:0, step:0, cap:0, alt:"Hip thrust lżejszy"},
     {n:"Wspięcia stojąc", s0:2, r:"10–15", w:60, step:5, cap:110, alt:"Wspięcia siedząc"},
     {n:"Odwodzenie biodra na maszynie", s0:2, r:"12–15", w:0, step:0, cap:0, alt:"Chód z taśmą w bok"}
@@ -334,7 +334,7 @@ function sessionOpen(dayId){
     return `<div class="ex"><div class="ex-top"><div class="ex-name">1. Wejście · kardio</div><div class="ex-load">5–7 min</div></div>
       <div class="alt">Rower stacjonarny albo orbitrek, łatwy oddech, bez zadyszki. Cel: ciepło w biodrach i kolanach, nie trening wytrzymałości.</div></div>
       <div class="ex"><div class="ex-top"><div class="ex-name">2. Mobilizacja</div><div class="ex-load">6–8 min</div></div>
-      <div class="alt">Krążenia bioder w obie strony. 90/90 albo figura czwórki (stopa na kolanie) bez dociskania. Wypad w miejscu tylko do wygodnej wysokości. Delikatne kiwanie biodrem w przysiadzie do tej samej wysokości, bez sprężynowania. Tył uda ruszasz w kontrolowanym zawiasie z ugiętymi kolanami — nie szarpiesz wyprostowaną nogą do bólu.</div></div>
+      <div class="alt">Krążenia bioder w obie strony. 90/90 albo figura czwórki (stopa na kolanie) bez dociskania. Wypad w miejscu tylko do wygodnej wysokości — nie siadasz na pięcie. Stojąc, lekko zbliż piętę do pośladka tylko do pierwszego napięcia czworogłowego, bez dociskania. Delikatne kiwanie biodrem w przysiadzie do tej samej wygodnej wysokości, bez sprężynowania. Tył uda ruszasz w kontrolowanym zawiasie z ugiętymi kolanami. Zgięcie kolana kończysz, zanim pojawi się ucisk albo uczucie kulki pod rzepką.</div></div>
       <div class="ex"><div class="ex-top"><div class="ex-name">3. Serie wejściowe</div><div class="ex-load">4–5 min</div></div>
       <div class="alt">Dwie lekkie serie pierwszego ćwiczenia dnia (ok. 50% i 70% ciężaru roboczego), pełna kontrola zakresu. Potem zaczynasz serie zapisane poniżej.</div></div>`;
   }
@@ -395,7 +395,7 @@ function renderPlan(week){
     <div class="card">
       <h2>Przebieg wizyty</h2>
       <p>1. Kardio wejściowe 5–7 min — rower albo orbitrek, łatwy oddech.</p>
-      <p>2. Mobilizacja 6–8 min — biodra i tył uda w dniach dolnych, klatka i łopatki w dniach górnych. Zakres tylko do komfortu.</p>
+      <p>2. Mobilizacja 6–8 min — biodra, tył uda i czworogłowy w dniach dolnych (bez siadu na piętach), klatka i łopatki w dniach górnych. Zakres tylko do komfortu.</p>
       <p>3. Serie wejściowe 4–5 min — dwie lekkie serie pierwszego ćwiczenia.</p>
       <p>4. Trening właściwy ok. 40–50 min — przerwy 90–120 s na głównych ruchach, 60–75 s na izolacjach.</p>
       <p>5. Zakończenie 4–6 min — spokojny rower albo marsz i zapis serii.</p>
@@ -406,7 +406,7 @@ function renderPlan(week){
     </div>
     <div class="card">
       <h2>Dlaczego ten zestaw</h2>
-      <p>Nie chodzi o konkretną nazwę przysiadu, tylko o mechanikę: schodzisz tylko do wysokości, w której kolano jest wygodne (boks, piny, goblet albo hack — byle nie na pełną głębokość). Dół w blokach A–B odrabia zaległości, ale bez gonienia dużych nóg; od bloku C dodatkowe serie idą tylko na górę. Góra celuje w V-taper: skos, dipy, szerokie ściąganie, wiosła z podparciem, częste wznosy i face pull. Wyciskanie nad głowę jest siedząc z oparciem, żeby tułów nie uciekał w zaokrąglenie. Przed dołem jest osobna rozgrzewka bioder i tyłu uda: zakres rośnie z komfortem, nie z ciężarem, a RDL nie goni rozciągnięcia na dole. Core to Pallof i spacer, nie ciężkie spięcia tułowia. Wizyta jest ułożona od wejścia do wyjścia: lekkie kardio, mobilizacja, serie wejściowe, 6–7 ćwiczeń i krótkie zejście z tętna. Całość ma się zmieścić w 60–75 minut.</p>
+      <p>Nie chodzi o konkretną nazwę przysiadu, tylko o mechanikę: schodzisz tylko do wysokości, w której kolano jest wygodne (boks, piny, goblet albo hack — byle nie na pełną głębokość). Dół w blokach A–B odrabia zaległości, ale bez gonienia dużych nóg; od bloku C dodatkowe serie idą tylko na górę. Góra celuje w V-taper: skos, dipy, szerokie ściąganie, wiosła z podparciem, częste wznosy i face pull. Wyciskanie nad głowę jest siedząc z oparciem, żeby tułów nie uciekał w zaokrąglenie. Przed dołem jest osobna rozgrzewka bioder, tyłu uda i czworogłowego: nie siadasz na piętach i nie pogłębiasz zgięcia kolana do uczucia kulki pod rzepką. Zakres rośnie z komfortem, nie z ciężarem, a RDL nie goni rozciągnięcia na dole. Core to Pallof i spacer, nie ciężkie spięcia tułowia. Wizyta jest ułożona od wejścia do wyjścia: lekkie kardio, mobilizacja, serie wejściowe, 6–7 ćwiczeń i krótkie zejście z tętna. Całość ma się zmieścić w 60–75 minut.</p>
     </div>
     ${renderWorkouts(week)}`;
   fillWeekbar("weekbar-p", week);
