@@ -13,6 +13,9 @@ Publikacja: GitHub Pages z katalogu głównego (index.html).
 - Import CSV z Hevy (parser w czystym JS, podgląd, deduplikacja, cofnięcie). Pliki testowe w `tests/fixtures/` są syntetyczne.
 - Trening seria po serii z licznikiem przerwy.
 - Baza ćwiczeń z wyszukiwarką i filtrami.
+- Plan 28 tygodni: poziomy objętości rosnące o najwyżej 2 serie na partię, superserie (sesje 60–75 min), tydzień kontrolny (6) i lżejsze tygodnie (12, 18, 24, 28).
+- Podwójna progresja: podpowiedź ciężaru z ostatniej sesji w aplikacji; kilogramy w planie to orientacyjne założenia.
+- Fazy żywieniowe i progi decyzyjne jako zasady względne; własną masę i utrzymanie wpisujesz lokalnie (nie trafiają do repozytorium).
 
 ## Źródła danych
 

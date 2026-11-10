@@ -12,7 +12,7 @@
 <title>Plan 28</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-180.png">
-<meta name="app-version" content="2026-11-10.5-tekst">
+<meta name="app-version" content="2026-11-10.6-audyt">
 <script>
 try{const t=localStorage.getItem('plan28-theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}
 </script>
@@ -390,16 +390,32 @@ const LS = {
   aliases: "plan28-aliases",
   legacyDone: "plan28-legacy-migrated"
 };
-const APP_VERSION = "2026-11-10.5-tekst";
+const APP_VERSION = "2026-11-10.6-audyt";
 const SCHEMA = 1;
 const NOBACKUP = [LS.undo, LS.rest, LS.gate, "plan28-intro", "plan28-exui"];
 const JSON_KEYS = [LS.sets, LS.sessions, LS.imports, LS.settings, LS.active, LS.measures, LS.logs, LS.aliases];
 
 const BLOCKS = [
-  {id:"A", name:"Adaptacja", weeks:[1,6], rir:"RIR 4 → 2", note:"Tygodnie 1–2: 2 serie, RIR 4, lżejszy ciężar i nauka pozycji. Tygodnie 3–5: 3 serie. Tydzień 6: deload (2 serie, trochę lżejszy ciężar). Dół w kontrolowanym zakresie."},
-  {id:"B", name:"Kształt", weeks:[7,14], rir:"RIR 2–3", note:"Więcej serii na głównych ruchach (do 4). Dół nadal rozwijasz w kontrolowanym zakresie, góra buduje klatkę, plecy i boczne partie barków. Ciężary rosną stopniowo."},
-  {id:"C", name:"Rozwój", weeks:[15,21], rir:"RIR 2", note:"Góra dostaje więcej serii, dół schodzi na utrzymanie (mniej serii). Ciężary rosną stopniowo. Kalorie blisko utrzymania."},
-  {id:"D", name:"Szlif", weeks:[22,28], rir:"RIR 2", note:"3 serie jakościowe, wyższe ciężary niż na starcie, bez dokładania objętości. Tydzień 28 jest lżejszy. Góra w priorytecie, dół na utrzymaniu."}
+  {id:"A", name:"Adaptacja", weeks:[1,6], rir:"RIR 4 → 2–3", note:"Tygodnie 1–2: 2 serie na ćwiczenie, RIR 4, nauka pozycji. Tygodnie 3–5: serie rosną o 1 na głównych ruchach. Tydzień 6 to tydzień kontrolny, nie deload: te same serie co w tygodniu 5, RIR 3, ciężar bez zmian, pomiary i przegląd. Superserie skracają sesję."},
+  {id:"B", name:"Kształt", weeks:[7,14], rir:"RIR 2–3", note:"Objętość rośnie powoli, najwyżej o 2 serie na partię co kilka tygodni. Priorytet: boczne partie barków i szerokość pleców. Dół: mniej serii niż góra, zakres kontrolowany. Tydzień 12 jest lżejszy (deload)."},
+  {id:"C", name:"Rozwój", weeks:[15,21], rir:"RIR 2–3", note:"Szczyt objętości bez nowych skoków: góra 20 serii na sesję, dół 14–15. Podwójna progresja zamiast stałej tabeli kilogramów. Tydzień 18 jest lżejszy (deload)."},
+  {id:"D", name:"Szlif", weeks:[22,28], rir:"RIR 2", note:"Mniej serii na klatkę, plecy i ramiona, boczne barki zostają na wysokim poziomie. Tydzień 24 jest lżejszy, tydzień 28 kończy plan: lżej, pomiary, zdjęcia, decyzja o kolejnym etapie."}
+];
+
+/* Fazy żywieniowe (niezależne od bloków treningowych). Wartości względne, bez liczb kcal: kalorie liczysz od własnego utrzymania. */
+const PHASES = [
+  {id:"K", name:"Kalibracja", weeks:[1,3], off:[0,0], p:[1.6,2.2], f:[0.8,1.0],
+   what:"Jesz na poziomie utrzymania i zbierasz dane: waga codziennie rano (średnia 7 dni), talia, kroki, sen, wykonanie planu. Cel: ustalić, ile naprawdę wynosi Twoje utrzymanie.",
+   go:"Przejście dalej: 2–3 tygodnie stabilnej średniej wagi albo znany trend, wykonanie planu co najmniej 85–90%."},
+  {id:"O", name:"Odbudowa", weeks:[4,8], off:[0,150], p:[1.6,2.2], f:[0.8,1.0],
+   what:"Utrzymanie albo lekka nadwyżka (do +150 kcal), jeśli siła rośnie wolniej niż oczekujesz, a talia stoi w miejscu. Siła i obwody ramion, klatki i uda wracają do poprzedniego poziomu.",
+   go:"Decyzja w tygodniu 8 wg progów poniżej. Redukcję możesz zacząć wcześniej, gdy talia rośnie przez 3 tygodnie."},
+  {id:"R", name:"Redukcja", weeks:[9,22], off:[-500,-300], p:[1.8,2.2], f:[0.8,1.0],
+   what:"Deficyt −300 do −500 kcal od skalibrowanego utrzymania. Cel tempa: −0,25 do −0,5% masy ciała na tydzień (średnia 7 dni). Węglowodany spadają, białko zostaje. Tygodnie 12 i 18 są lżejsze treningowo: opcjonalnie wtedy jesz na utrzymaniu.",
+   go:"Czas trwania zależy od zapasu tłuszczu do celu. Przy niewielkim zapasie to zwykle ok. 7–14 tygodni samej redukcji (założenie, do potwierdzenia pomiarem % tłuszczu jedną metodą)."},
+  {id:"W", name:"Wykończenie", weeks:[23,28], off:[-300,0], p:[1.8,2.2], f:[0.8,1.0],
+   what:"Kontynuacja redukcji albo utrzymanie, zależnie od pomiaru i trendu. Tydzień 24 jest lżejszy, tydzień 28 kończy plan: pomiary, zdjęcia, plan na kolejne 12 tygodni.",
+   go:"Decyzja o dalszym etapie na podstawie trendu wagi, talii, obwodu barków, zdjęć i siły."}
 ];
 
 const DAYS = [
@@ -409,70 +425,64 @@ const DAYS = [
   {id:"LB", name:"Lower B", wd:4, label:"Czwartek"}
 ];
 
+/* s = serie na poziom objętości [L0 tyg.1–2, L1 tyg.3–4, L2 tyg.5–8, L3 tyg.9–14, L4 tyg.15–21, L5 tyg.22–27]; 0 = ćwiczenia nie ma jeszcze w planie.
+   m = udział w partiach (bezpośrednio 1, pośrednio 0,5) do tabeli serii na partię. ss = superseria (litera + kolejność). w/cap/step = ciężar startowy, orientacyjny cel i najmniejszy krok.
+   Ciężary to założenia: punkt startu i orientacja, nie obowiązek. Prawdziwa progresja idzie po powtórzeniach i RIR (podwójna progresja). */
 const EX = {
   UA: [
-    {n:"Wyciskanie hantli na skosie", kind:"main", w:32, step:1, cap:38, alt:"Wyciskanie sztangi na skosie albo maszyna"},
-    {n:"Ściąganie drążka nachwytem (szerokie)", kind:"main", w:60, step:2.5, cap:75, alt:"Podciąganie nachwytem z pomocą"},
-    {n:"Pompki na poręczach (dipy) z obciążeniem", kind:"main", w:10, step:2.5, cap:30, alt:"Wyciskanie na maszynie poziomej"},
-    {n:"Wiosłowanie z podparciem klatki", kind:"main", w:65, step:2.5, cap:85, alt:"Wiosło na wyciągu siedząc"},
-    {n:"Wznosy bokiem na wyciągu", kind:"iso", w:8, step:1, cap:12, alt:"Wznosy hantlami stojąc"},
-    {n:"Uginanie ze sztangą łamaną", kind:"iso", w:25, step:2.5, cap:35, alt:"Uginanie na wyciągu"}
+    {n:"Wyciskanie hantli na skosie", kind:"main", w:30, step:1, cap:38, s:[2,3,3,3,4,3], m:{klatka:1,"bark przedni":.5,triceps:.5}, ss:"A1", alt:"Wyciskanie sztangi na skosie albo maszyna"},
+    {n:"Ściąganie drążka nachwytem (szerokie)", kind:"main", w:45, step:2.5, cap:75, s:[2,3,3,4,4,3], m:{plecy:1,biceps:.5}, ss:"A2", alt:"Chwyt neutralny (równoległy) albo podciąganie z pomocą"},
+    {n:"Wyciskanie na maszynie poziomej (siedząc)", kind:"main", s:[2,2,2,2,2,2], m:{klatka:1,"bark przedni":.5,triceps:.5}, ss:"B1", alt:"Wyciskanie hantli na ławce płaskiej, chwyt półneutralny"},
+    {n:"Wiosłowanie z podparciem klatki", kind:"main", s:[2,2,3,3,3,3], m:{plecy:1,biceps:.5,"bark tylny":.5}, ss:"B2", alt:"Wiosło na wyciągu siedząc"},
+    {n:"Wznosy bokiem na wyciągu", kind:"iso", w:6.25, step:1.25, cap:12.5, s:[2,3,3,4,4,4], m:{"bark boczny":1}, ss:"C1", alt:"Wznosy hantlami stojąc"},
+    {n:"Uginanie ze sztangą łamaną", kind:"iso", w:30, step:2.5, cap:45, s:[2,2,2,3,3,2], m:{biceps:1}, ss:"C2", alt:"Uginanie na wyciągu"}
   ],
   LA: [
-    {n:"Hip thrust", kind:"main", w:90, step:5, cap:150, alt:"Mostek z hantlem"},
-    {n:"RDL z kontrolowanym zakresem", kind:"main", w:60, step:2.5, cap:100, alt:"Prostowanie tułowia 45° z lekko ugiętymi kolanami"},
-    {n:"Leg press (stopy trochę wyżej, bez głębokiego zgięcia)", kind:"main", w:150, step:5, cap:200, alt:"Hack tylko do tej samej, wygodnej wysokości"},
-    {n:"Uginanie ud siedząc", kind:"iso", w:60, step:2.5, cap:85, alt:"Uginanie ud leżąc"},
-    {n:"Wspięcia na palce siedząc", kind:"iso", w:40, step:2.5, cap:60, alt:"Wspięcia stojąc"}
+    {n:"Hip thrust", kind:"main", w:90, step:5, cap:150, s:[2,3,3,3,3,3], m:{"tylna taśma":1}, alt:"Mostek z hantlem"},
+    {n:"RDL z kontrolowanym zakresem", kind:"main", w:70, step:2.5, cap:110, s:[2,2,3,3,3,3], m:{"tylna taśma":1}, alt:"Prostowanie tułowia 45° z lekko ugiętymi nogami"},
+    {n:"Leg press (kontrolowana głębokość)", kind:"main", w:150, step:5, cap:200, s:[2,3,3,3,3,3], m:{"czworogłowe":1,"tylna taśma":.5}, alt:"Hack tylko do tej samej, wygodnej wysokości"},
+    {n:"Uginanie ud siedząc", kind:"iso", w:60, step:2.5, cap:95, s:[2,2,2,2,2,2], m:{"tylna taśma":1}, ss:"D1", alt:"Uginanie ud leżąc"},
+    {n:"Wspięcia na palce siedząc", kind:"iso", w:30, step:2.5, cap:60, s:[2,2,2,3,3,3], m:{"łydki":1}, ss:"D2", alt:"Wspięcia stojąc"}
   ],
   UB: [
-    {n:"Wyciskanie sztangi leżąc", kind:"main", w:85, step:2.5, cap:105, alt:"Wyciskanie na maszynie poziomej"},
-    {n:"Wiosłowanie jednorącz na maszynie", kind:"main", w:85, step:5, cap:115, alt:"Wiosło hantlem z podparciem klatki"},
-    {n:"Wyciskanie hantli siedząc z oparciem", kind:"main", w:20, step:1, cap:26, alt:"Wyciskanie na maszynie barkowej albo landmine press"},
-    {n:"Ściąganie wyciągu prostymi ramionami", kind:"iso", w:22, step:2.5, cap:35, alt:"Ściąganie wąskim chwytem"},
-    {n:"Rozpiętki na maszynie lub wyciągu", kind:"iso", w:20, step:2.5, cap:35, alt:"Krzyżowanie wyciągów"},
-    {n:"Wznosy bokiem hantlami", kind:"iso", w:9, step:1, cap:14, alt:"Wznosy na maszynie"},
-    {n:"Prostowanie na wyciągu + uginanie młotkowe", kind:"iso", w:22, step:2.5, cap:35, alt:"Wyciskanie francuskie / uginanie na ławce skośnej"}
+    {n:"Wyciskanie sztangi leżąc", kind:"main", w:85, step:2.5, cap:105, capTo21:100, hard:true, s:[2,3,3,3,3,3], m:{klatka:1,triceps:.5,"bark przedni":.5}, ss:"A1", alt:"Wyciskanie na maszynie poziomej"},
+    {n:"Wiosłowanie jednorącz na maszynie", kind:"main", w:85, step:5, cap:115, s:[2,3,3,3,3,3], m:{plecy:1,biceps:.5,"bark tylny":.5}, ss:"A2", alt:"Wiosło hantlem z podparciem klatki"},
+    {n:"Wyciskanie hantli siedząc z oparciem", kind:"main", w:20, step:1, cap:26, s:[2,2,2,3,3,2], m:{"bark przedni":1,"bark boczny":.5,triceps:.5}, ss:"B1", alt:"Wyciskanie na maszynie barkowej (chwyt półneutralny) albo landmine press"},
+    {n:"Ściąganie wyciągu prostymi ramionami", kind:"iso", w:22.5, step:2.5, cap:35, s:[2,2,2,3,3,3], m:{plecy:1}, ss:"B2", alt:"Ściąganie wąskim chwytem"},
+    {n:"Rozpiętki na maszynie lub wyciągu", kind:"iso", w:20, step:2.5, cap:35, s:[2,2,2,2,2,2], m:{klatka:1}, ss:"C1", alt:"Krzyżowanie wyciągów"},
+    {n:"Wznosy bokiem hantlami", kind:"iso", w:9, step:1, cap:14, s:[2,3,3,3,3,4], m:{"bark boczny":1}, ss:"C2", alt:"Wznosy na maszynie"},
+    {n:"Prostowanie na wyciągu + uginanie młotkowe", kind:"iso", w:22.5, step:2.5, cap:35, s:[2,2,3,3,3,3], m:{triceps:1,biceps:1}, alt:"Wyciskanie francuskie / uginanie na ławce skośnej"}
   ],
   LB: [
-    {n:"Przysiad do wygodnej wysokości", kind:"main", w:40, step:2.5, cap:70, alt:"Box squat, goblet do skrzyni albo hack"},
-    {n:"Odwrotny wypad (krótki krok, kolano nie wychodzi mocno w przód)", kind:"iso", w:10, step:2, cap:20, alt:"Niski step-up, bez siadania w głęboki zakres"},
-    {n:"Prostowanie nóg siedząc (środkowy zakres)", kind:"iso", w:35, step:2.5, cap:55, alt:"Przy dyskomforcie użyj zamiennika: leg press w wygodnym zakresie"},
-    {n:"Prostowanie tułowia na ławce 45°", kind:"iso", bw:true, alt:"Hip thrust lżejszy"},
-    {n:"Wspięcia stojąc", kind:"iso", w:50, step:5, cap:90, alt:"Wspięcia siedząc"},
-    {n:"Odwodzenie biodra na maszynie", kind:"iso", w:25, step:5, cap:45, alt:"Chód z taśmą w bok"}
+    {n:"Przysiad do wygodnej wysokości", kind:"main", w:40, step:2.5, cap:70, s:[2,3,3,3,3,3], m:{"czworogłowe":1,"tylna taśma":.5}, alt:"Box squat, goblet do skrzyni albo hack"},
+    {n:"Odwrotny wypad (krótki krok, tułów prosto)", kind:"iso", w:10, step:2, cap:20, s:[2,2,2,2,2,2], m:{"czworogłowe":1,"tylna taśma":.5}, alt:"Niski step-up do wygodnej wysokości"},
+    {n:"Prostowanie nóg siedząc (środkowy zakres)", kind:"iso", w:35, step:2.5, cap:55, s:[2,2,2,2,2,2], m:{"czworogłowe":1}, ss:"E1", alt:"Leg press w wygodnym zakresie"},
+    {n:"Wspięcia stojąc", kind:"iso", w:50, step:5, cap:100, s:[2,2,2,3,3,3], m:{"łydki":1}, ss:"E2", alt:"Wspięcia siedząc"},
+    {n:"Wznosy bokiem na wyciągu", kind:"iso", w:6.25, step:1.25, cap:12.5, s:[0,0,2,2,3,3], m:{"bark boczny":1}, ss:"F1", alt:"Wznosy hantlami stojąc"},
+    {n:"Prostowanie tułowia na ławce 45°", kind:"iso", bw:true, s:[2,2,2,2,2,2], m:{"tylna taśma":1}, ss:"F2", alt:"Hip thrust lżejszy"}
   ]
 };
 
 const CORE = {
   UA: [
-    {n:"Dead bug (żebra w dół, lędźwie na macie)", bw:true, r:"6–8/str", alt:"Bird dog"},
-    {n:"Wznosy Y leżąc przodem na ławce", bw:true, r:"10–12", alt:"Band pull-apart"},
-    {n:"Face pull (łopatki w dół i w tył)", w:12, step:1.25, cap:20, r:"12–15", alt:"Odwrotne rozpiętki"}
+    {n:"Dead bug (żebra w dół, lędźwie na macie)", bw:true, r:"6–8/str", s:2, m:{"tułów":1}, alt:"Bird dog"},
+    {n:"Face pull (łopatki w dół i w tył)", w:8, step:1.25, cap:20, r:"12–15", s:2, m:{"bark tylny":1}, alt:"Odwrotne rozpiętki"}
   ],
   LA: [
-    {n:"Pallof press", w:10, step:1.25, cap:18, r:"8–10/str", alt:"Martwy błąd / dead bug"},
-    {n:"Dead bug (żebra w dół)", bw:true, r:"6–8/str", alt:"Bird dog"},
-    {n:"Deska bokiem na kolanie", bw:true, r:"20–30 s/str", alt:"Pallof jednorącz"}
+    {n:"Pallof press", w:10, step:1.25, cap:18, r:"8–10/str", s:2, m:{"tułów":1}, alt:"Martwy błąd / dead bug"},
+    {n:"Dead bug (żebra w dół)", bw:true, r:"6–8/str", s:2, m:{"tułów":1}, alt:"Bird dog"}
   ],
   UB: [
-    {n:"Face pull (łopatki w dół i w tył)", w:12, step:1.25, cap:20, r:"12–15", alt:"Odwrotne rozpiętki"},
-    {n:"Dead bug (żebra w dół)", bw:true, r:"6–8/str", alt:"Bird dog"},
-    {n:"Spacer farmerski, tułów wysoki", w:20, step:2, cap:32, r:"20–30 s", alt:"Suitcase carry, jedna strona po drugiej"}
+    {n:"Face pull (łopatki w dół i w tył)", w:8, step:1.25, cap:20, r:"12–15", s:2, m:{"bark tylny":1}, alt:"Odwrotne rozpiętki"},
+    {n:"Dead bug (żebra w dół)", bw:true, r:"6–8/str", s:2, m:{"tułów":1}, alt:"Bird dog"}
   ],
   LB: [
-    {n:"Pallof press", w:10, step:1.25, cap:18, r:"8–10/str", alt:"Dead bug"},
-    {n:"Dead bug (żebra w dół)", bw:true, r:"6–8/str", alt:"Bird dog"},
-    {n:"Deska bokiem na kolanie", bw:true, r:"20–30 s/str", alt:"Spacer farmerski"}
+    {n:"Pallof press", w:10, step:1.25, cap:18, r:"8–10/str", s:2, m:{"tułów":1}, alt:"Dead bug"},
+    {n:"Deska bokiem (łatwiejszy wariant)", bw:true, r:"20–30 s/str", s:2, m:{"tułów":1}, alt:"Pallof jednorącz"}
   ]
 };
-
-const NUTRITION = [
-  {id:"A", kcal:[2700,2800], p:[170,180], f:[80,90], c:[280,330], note:"Utrzymanie pod odbudowę. Waga może lekko wzrosnąć — to glikogen i trening, nie powód do natychmiastowego cięcia."},
-  {id:"B", kcal:[2700,2800], p:[170,180], f:[80,90], c:[280,330], note:"Bez zmian, jeśli talia stoi w miejscu albo spada. Jeśli talia rośnie przez 2 tygodnie, odejmij 150 kcal z węglowodanów."},
-  {id:"C", kcal:[2550,2750], p:[170,180], f:[75,85], c:[250,310], note:"Zostajesz przy utrzymaniu, gdy góra odrabia obwody. Mały deficyt (ok. −150 do −200 kcal) tylko gdy talia nie chce zejść."},
-  {id:"D", kcal:[2500,2700], p:[170,180], f:[70,85], c:[240,300], note:"Doprecyzowanie wyglądu: wolny deficyt albo utrzymanie, jeśli proporcje już wyglądają tak, jak chcesz."}
-];
+const GROUPS = ["klatka","plecy","bark boczny","bark przedni","bark tylny","biceps","triceps","czworogłowe","tylna taśma","łydki","tułów"];
+const GROUP_NOTE = {"bark boczny":"priorytet","plecy":"priorytet"};
 
 function esc(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m]))}
 function imgFor(name){
@@ -481,7 +491,7 @@ function imgFor(name){
   if(/mobiliz|zakończ/.test(n)) return "stretch.jpg";
   if(/serie wejściowe|trening właściwy/.test(n)) return "plates.jpg";
   if(/przysiad/.test(n)) return "rack.jpg";
-  if(/skos|rozpiętk|wyciskanie sztangi leż/.test(n)) return "db-press.jpg";
+  if(/skos|rozpiętk|wyciskanie sztangi leż|maszynie poziomej/.test(n)) return "db-press.jpg";
   if(/ściąganie drążka|podciąg/.test(n)) return "pullup.jpg";
   if(/dipy|pompki/.test(n)) return "push.jpg";
   if(/hip thrust|rdl|prostowanie tułowia/.test(n)) return "hiphinge.jpg";
@@ -500,68 +510,98 @@ function exHead(name, load){
   const loadHtml = load ? `<div class="ex-load">${load}</div>` : "";
   return `<div class="ex">${exThumb(name)}<div class="ex-body"><div class="ex-top"><div class="ex-name">${esc(name)}</div>${loadHtml}</div>`;
 }
+const DELOADS = [12,18,24,28];
 function blockOf(w){return BLOCKS.find(b=>w>=b.weeks[0]&&w<=b.weeks[1])}
-function isDeload(w){return w===6 || w===28}
+function phaseOf(w){return PHASES.find(p=>w>=p.weeks[0]&&w<=p.weeks[1])}
+function isDeload(w){return DELOADS.includes(w)}
+function isControl(w){return w===6}
+function levelOf(w){return w<=2?0:w<=4?1:w<=8?2:w<=14?3:w<=21?4:5}
+function prevLoadWeek(w){let p=w-1; while(p>1&&isDeload(p)) p--; return Math.max(1,p)}
 function rirOf(w){
+  if(isDeload(w)) return w===28 ? "RIR 4 · tydzień lżejszy i pomiary" : "RIR 4 · tydzień lżejszy (deload): mniej serii, ciężar −10%";
   if(w<=2) return "RIR 4";
   if(w<=4) return "RIR 3";
   if(w===5) return "RIR 2–3";
-  if(w===6) return "RIR 3 · deload: mniej serii i trochę lżejszy ciężar";
-  if(w<=21) return "RIR 2";
-  if(w===28) return "RIR 3 · deload końcowy";
-  return "RIR 2 · jakość powtórzenia, bez dokładania serii";
+  if(w===6) return "RIR 3 · tydzień kontrolny: bez dokładania ciężaru";
+  if(w<=21) return "RIR 2–3";
+  return "RIR 2";
 }
 function roundTo(v, step){
   if(!step) return 0;
   return Math.round(v/step)*step;
 }
+/* orientacyjny udział drogi od ciężaru startowego do celu (nie jest obowiązkiem: ciężar rośnie po powtórzeniach i RIR) */
 function loadPct(week){
-  if(week<=2) return 0;
-  if(week===6) return 0.10;
-  if(week<=5) return 0.08*(week-2);
-  if(week<=14) return 0.25 + (week-7)*(0.35/7);
-  if(week<=21) return 0.62 + (week-15)*(0.28/6);
-  if(week<=27) return 0.90 + (week-22)*0.016;
-  return 0.65;
+  const w = isDeload(week) ? prevLoadWeek(week) : week;
+  if(w<=2) return 0;
+  if(w<=4) return 0.10;
+  if(w<=6) return 0.20;
+  if(w<=8) return 0.28;
+  if(w<=14) return 0.40 + (w-9)*0.02;
+  if(w<=21) return 0.55 + (w-15)*0.03;
+  return 0.80 + (w-22)*0.03;
+}
+function capFor(ex, week){
+  if(ex.capTo21 && week<=21) return ex.capTo21;
+  return ex.cap;
+}
+function rawLoad(ex, week){
+  const cap = capFor(ex, week);
+  const span = (ex.cap??ex.w) - ex.w;
+  const raw = ex.w + span * loadPct(week);
+  return Math.min(cap??raw, roundTo(raw, ex.step));
 }
 function loadFor(ex, week){
   if(ex.bw) return "bw";
-  if(!ex.step && (ex.w==null)) return null;
+  if(ex.w==null) return null;
   if(!ex.step) return ex.w||null;
-  const span = (ex.cap??ex.w) - ex.w;
-  const raw = ex.w + span * loadPct(week);
-  return Math.min(ex.cap??raw, roundTo(raw, ex.step));
+  const v = rawLoad(ex, week);
+  if(isDeload(week)) return Math.max(ex.step, roundTo(v*0.9, ex.step));
+  return v;
 }
 function fmtKg(v){
   if(v==="bw") return "ciężar ciała";
   if(v==null) return "dobór wg RIR";
-  return (Number.isInteger(v)?v:v.toFixed(1).replace(".",","))+" kg";
+  return (Number.isInteger(v)?v:v.toFixed(2).replace(/0$/,"").replace(".",","))+" kg";
 }
-function repsFor(ex, week){
+function isLowerDay(dayId){return dayId==="LA"||dayId==="LB"}
+function repsFor(ex, week, dayId){
   if(ex.r) return ex.r;
   const b = blockOf(week).id;
-  if(ex.kind==="iso") return {A:"12–15",B:"10–12",C:"10–12",D:"12–15"}[b];
-  return {A:"8–10",B:"6–10",C:"6–8",D:"8–10"}[b];
+  if(ex.kind==="iso") return {A:"12–15",B:"10–15",C:"10–15",D:"12–15"}[b];
+  if(isLowerDay(dayId)) return b==="A" ? "8–10" : "8–12";
+  return {A:"8–10",B:"6–10",C:"6–10",D:"8–10"}[b];
 }
-function setsFor(ex, week, idx, dayId){
-  if(isDeload(week)) return 2;
-  const b = blockOf(week).id;
-  const isLower = dayId==="LA"||dayId==="LB";
-  const main = ex.kind==="main" || idx<2;
-  if(b==="A") return week<=2 ? 2 : (main?3:2);
-  if(b==="B") return main?4:3;
-  if(b==="C"){
-    if(isLower) return main?3:2;
-    return main?4:3;
+function repsHi(txt){const m=/(\d+)\D+(\d+)/.exec(String(txt)); return m?+m[2]:null}
+function repsLoNum(txt){const m=/(\d+)/.exec(String(txt)); return m?+m[1]:null}
+function setsFor(ex, week){
+  if(isDeload(week)){
+    const prev = ex.s[levelOf(prevLoadWeek(week))];
+    return prev<=0 ? 0 : Math.max(2, Math.round(prev*0.6));
   }
-  return 3;
+  return ex.s[levelOf(week)];
 }
-function setsForCore(week){
-  if(isDeload(week)) return 2;
-  const b = blockOf(week).id;
-  if(b==="A") return 2;
-  if(b==="D") return 2;
-  return 3;
+function setsForCore(week, ex){
+  return (ex&&ex.s)||2;
+}
+/* serie na partię w danym tygodniu (bezpośrednie 1, pośrednie 0,5) */
+function weekVolume(week){
+  const v={};
+  Object.keys(EX).forEach(d=>{
+    EX[d].forEach(ex=>{const s=setsFor(ex,week); Object.entries(ex.m).forEach(([g,x])=>{v[g]=(v[g]||0)+s*x})});
+    CORE[d].forEach(ex=>{const s=setsForCore(week,ex); Object.entries(ex.m).forEach(([g,x])=>{v[g]=(v[g]||0)+s*x})});
+  });
+  return v;
+}
+function daySets(dayId, week){
+  return {lifts:EX[dayId].reduce((s,ex)=>s+setsFor(ex,week),0), core:CORE[dayId].reduce((s,ex)=>s+setsForCore(week,ex),0)};
+}
+/* orientacyjny czas sesji w minutach (model: wejście ≈12, serie w superserii ≈2,2, proste główne ≈3, proste izolacje ≈2,3, brzuch ≈1,5, zakończenie ≈4) */
+function dayMinutes(dayId, week){
+  let m=12+4;
+  EX[dayId].forEach(ex=>{const s=setsFor(ex,week); m+=s*(ex.ss?2.2:(ex.kind==="main"?3:2.3))});
+  CORE[dayId].forEach(ex=>{m+=setsForCore(week,ex)*1.5});
+  return Math.round(m/5)*5;
 }
 
 async function sha256(text){
@@ -585,79 +625,107 @@ function setWeek(w){
 }
 
 function sessionOpen(dayId){
-  const lower = dayId==="LA"||dayId==="LB";
+  const lower = isLowerDay(dayId);
   if(lower){
-    return `${exHead("1. Wejście · kardio","5–7 min")}
-      <div class="alt">Rower stacjonarny albo orbitrek, łatwy oddech, bez zadyszki. Cel: ciepło w biodrach i kolanach, nie trening wytrzymałości.</div></div></div>
-      ${exHead("2. Mobilizacja","6–8 min")}
-      <div class="alt">Krążenia bioder w obie strony. 90/90 albo figura czwórki (stopa na kolanie) bez dociskania. Wypad w miejscu tylko do wygodnej wysokości. Stojąc, lekko zbliż piętę do pośladka tylko do pierwszego napięcia czworogłowego, bez dociskania. Delikatne kiwanie biodrem w przysiadzie do tej samej wygodnej wysokości, bez sprężynowania. Tył uda ruszasz w kontrolowanym zawiasie z ugiętymi kolanami. Zakres kończysz przed pojawieniem się dyskomfortu.</div></div></div>
-      ${exHead("3. Serie wejściowe","4–5 min")}
+    return `${exHead("1. Wejście · kardio","5 min")}
+      <div class="alt">Rower stacjonarny albo orbitrek, łatwy oddech, bez zadyszki. Cel: ciepło w nogach i biodrach, nie trening wytrzymałości.</div></div></div>
+      ${exHead("2. Mobilizacja","4 min")}
+      <div class="alt">Krążenia bioder w obie strony. Rotacje bioder w leżeniu na plecach z wyprostowanymi nogami, bez dociskania. Marsz boczny z taśmą, 2 × 8 kroków. Krótki wykrok stojąc z podparciem ręką, tylna noga prosta, miednica lekko podwinięta, tylko do pierwszego napięcia z przodu biodra. Mostek biodrowy w leżeniu 1 × 10 ze zatrzymaniem na górze. Zakres kończysz przed pojawieniem się dyskomfortu.</div></div></div>
+      ${exHead("3. Serie wejściowe","ok. 3 min")}
       <div class="alt">Dwie lekkie serie pierwszego ćwiczenia dnia (ok. 50% i 70% ciężaru roboczego), pełna kontrola zakresu. Potem zaczynasz serie zapisane poniżej.</div></div></div>`;
   }
-  return `${exHead("1. Wejście · kardio","5–7 min")}
+  return `${exHead("1. Wejście · kardio","5 min")}
       <div class="alt">Rower, orbitrek albo lekki ergometr. Łatwy oddech. Rozgrzewasz barki i tułów, nie robisz osobnego treningu cardio.</div></div></div>
-      ${exHead("2. Mobilizacja","6–8 min")}
-      <div class="alt">Krążenia ramion i łopatek. Band pull-apart albo face pull bez obciążenia 2×15. Otwieranie klatki o ławkę albo ścianę, barki w dół i w tył. Krążenie piersiowego odcinka na ławce. Żebra w dół, broda lekko schowana, barki w dół i w tył. Zakres bez dyskomfortu.</div></div></div>
-      ${exHead("3. Serie wejściowe","4–5 min")}
+      ${exHead("2. Mobilizacja","4 min")}
+      <div class="alt">Krążenia ramion i łopatek. Band pull-apart albo face pull bez obciążenia 2 × 15. Otwieranie klatki o ławkę albo ścianę, barki w dół i w tył. Zakres bez dyskomfortu.</div></div></div>
+      ${exHead("3. Serie wejściowe","ok. 3 min")}
       <div class="alt">Dwie lekkie serie pierwszego wyciskania (ok. 50% i 70% ciężaru roboczego). Potem serie zapisane poniżej.</div></div></div>`;
 }
 
-function sessionClose(dayId){
-  const lower = dayId==="LA"||dayId==="LB";
+function sessionClose(dayId, week){
+  const lower = isLowerDay(dayId);
   const extra = lower
-    ? "Na końcu 1–2 min bardzo lekkiego krążenia bioder albo 90/90, bez rozciągania tyłu uda na siłę."
-    : "Na końcu 1–2 min band pull-apart albo otwarcia klatki, barki luźno.";
-  return `${exHead("6. Zakończenie","4–6 min")}
-      <div class="alt">Spokojny rower albo marsz 3–4 min, aż oddech wróci. ${extra} Zapisz serie w aplikacji, napij się wody i wyjdź. Całość od wejścia do wyjścia ma się zmieścić w 60–75 minut: wejście + mobilizacja + serie wejściowe ok. 16–20 min, trening ok. 35–45 min, brzuch i postawa ok. 8 min, zakończenie ok. 5 min.</div></div></div>`;
+    ? "Na końcu 1 min bardzo lekkiego krążenia bioder, bez rozciągania tyłu uda na siłę."
+    : "Na końcu 1 min band pull-apart albo otwarcia klatki, barki luźno.";
+  const t = dayMinutes(dayId, week);
+  return `${exHead("6. Zakończenie","3–4 min")}
+      <div class="alt">Spokojny rower albo marsz, aż oddech wróci. ${extra} Zapisz serie w aplikacji, napij się wody i wyjdź. Szacunek tego dnia w tym tygodniu: ok. ${t} min (wejście ok. 12 min, serie, brzuch i postawa, zakończenie). Jeśli sesja zbliża się do 75 minut, pomiń ostatnią izolację zamiast skracać przerwy.</div></div></div>`;
 }
 
 function renderWorkouts(week){
+  const dl=isDeload(week);
   return DAYS.map(day=>{
     const lifts = EX[day.id].map((ex,i)=>{
+      const sets = setsFor(ex, week);
+      if(!sets) return "";
       const kg = loadFor(ex, week);
-      const sets = setsFor(ex, week, i, day.id);
+      const partner = ex.ss ? EX[day.id].find(x=>x.ss===ex.ss[0]+(ex.ss[1]==="1"?"2":"1")&&setsFor(x,week)>0) : null;
+      const ssChip = partner ? `<span class="chip">superseria ${esc(ex.ss)}</span>` : "";
+      const tempo = ex.kind==="main" ? `<span class="chip">opuszczanie 2–3 s</span>` : "";
       return `${exHead(ex.n, esc(fmtKg(kg)))}
-        <div class="chips"><span class="chip">${sets} × ${esc(repsFor(ex, week))}</span><span class="chip">${esc(rirOf(week).split("·")[0].trim())}</span><span class="chip">tempo 3-0-1-0</span></div>
+        <div class="chips"><span class="chip">${sets} × ${esc(repsFor(ex, week, day.id))}</span><span class="chip">${esc(rirOf(week).split("·")[0].trim())}</span>${tempo}${ssChip}</div>
+        ${partner?`<div class="alt">Na zmianę z: ${esc(partner.n.replace(/\s*\(.*$/,""))}. Przerwa dopiero po obu ćwiczeniach.</div>`:""}
         <div class="alt">Zamiennik: ${esc(ex.alt)}</div>
         ${exLinks(ex.n)}
       </div></div>`;
     }).join("");
     const core = CORE[day.id].map(ex=>{
       const kg = loadFor(ex, week);
-      const sets = setsForCore(week);
+      const sets = setsForCore(week, ex);
       return `${exHead(ex.n, esc(fmtKg(kg)))}
         <div class="chips"><span class="chip">${sets} × ${esc(ex.r)}</span><span class="chip">brzuch i postawa</span></div>
         <div class="alt">Zamiennik: ${esc(ex.alt)}</div>
         ${exLinks(ex.n)}
       </div></div>`;
     }).join("");
+    const ds=daySets(day.id, week);
     const list = sessionOpen(day.id)
-      + `${exHead("4. Trening właściwy","")}</div></div>` + lifts
-      + `${exHead("5. Brzuch i postawa","")}
-        <div class="alt">Nie robisz ciężkich spięć tułowia. Tu pilnujesz pozycji żeber i łopatek. Ruch spokojny, bez wstrzymywania oddechu.</div></div></div>` + core;
-    return `<article class="card"><div class="card-head"><h3>${esc(day.label)} · ${esc(day.name)}</h3><button type="button" class="btn btn-primary btn-inline" data-start-day="${day.id}">Zacznij trening</button></div>${list}${sessionClose(day.id)}</article>`;
+      + `${exHead("4. Trening właściwy", `${ds.lifts} serii`)}${dl?`<div class="alt">Tydzień lżejszy: mniej serii, ciężar ok. −10%, RIR 4.</div>`:""}</div></div>` + lifts
+      + `${exHead("5. Brzuch i postawa", `${ds.core} serie`)}
+        <div class="alt">Krótko i spokojnie. Pilnujesz pozycji żeber i łopatek, oddychasz płynnie, bez wstrzymywania oddechu.</div></div></div>` + core;
+    return `<article class="card"><div class="card-head"><h3>${esc(day.label)} · ${esc(day.name)}</h3><button type="button" class="btn btn-primary btn-inline" data-start-day="${day.id}">Zacznij trening</button></div>${list}${sessionClose(day.id, week)}</article>`;
   }).join("");
 }
 
+function volumeCard(week){
+  const v=weekVolume(week), prevW=week>1?prevLoadWeek(week):week, pv=weekVolume(prevW);
+  const rows=GROUPS.map(g=>{
+    const x=v[g]||0, d=x-(pv[g]||0);
+    const delta = week===1 ? "" : (d>0?` <span class="status-warn">+${String(d).replace(".",",")}</span>`:d<0?` <span class="muted">${String(d).replace(".",",")}</span>`:"");
+    return `<tr><td>${esc(g)}${GROUP_NOTE[g]?` <span class="badge plan">${GROUP_NOTE[g]}</span>`:""}</td><td class="num">${String(x).replace(".",",")}${delta}</td></tr>`;
+  }).join("");
+  return `<div class="card"><h2>Serie na partię · tydzień ${week}</h2>
+    <p class="muted">Seria bezpośrednia liczy się 1, pośrednia 0,5 (np. triceps w wyciskaniu). Zmiana pokazana względem poprzedniego tygodnia roboczego. Reguła: wzrost najwyżej o 2 serie na partię naraz.</p>
+    <div class="table-wrap"><table class="kv"><thead><tr><th>Partia</th><th class="num">Serie / tydz.</th></tr></thead><tbody>${rows}</tbody></table></div>
+    <p class="muted">Podział to decyzja o priorytecie (szerokie plecy i boczne barki), a nie wynik badań o optymalnej objętości każdej partii.</p></div>`;
+}
+
 function renderWeek(week){
-  const b = blockOf(week);
+  const b = blockOf(week), ph = phaseOf(week);
+  const tag = isDeload(week) ? " · tydzień lżejszy" : isControl(week) ? " · tydzień kontrolny" : "";
   document.getElementById("p-tydzien").innerHTML = `
     ${backupBanner()}
     ${todayCard()}
     <div class="week-hero">
       <img src="img/club.jpg" width="920" height="168" alt="" decoding="async">
       <div class="week-hero-cap">
-        <h2>Tydzień ${week} · blok ${esc(b.id)} · ${esc(b.name)}</h2>
-        <p>${esc(rirOf(week))}</p>
+        <h2>Tydzień ${week} · blok ${esc(b.id)} · ${esc(b.name)}${esc(tag)}</h2>
+        <p>${esc(rirOf(week))} · faza: ${esc(ph.name)}</p>
       </div>
     </div>
     <div class="card">
       <p class="muted">${esc(b.note)}</p>
-      <p class="muted">Sobota Upper A, niedziela Lower A, wtorek Upper B, czwartek Lower B. Tydzień zaczyna się od góry w sobotę. Każda wizyta: kardio 5–7 min → mobilizacja 6–8 min → serie wejściowe → trening → 4–6 min zakończenia. Poniedziałek, środa i piątek: spacer 25–40 min.</p>
+      <p class="muted">Sobota Upper A, niedziela Lower A, wtorek Upper B, czwartek Lower B. Każda wizyta: kardio 5 min → mobilizacja 4 min → serie wejściowe → trening w superseriach → zakończenie. Poniedziałek, środa i piątek: spacer 25–40 min. Cel czasu jednej wizyty: 60–75 minut.</p>
     </div>
     <div class="weekbar" id="weekbar-t"></div>
     ${renderWorkouts(week)}`;
   fillWeekbar("weekbar-t", week);
+}
+
+function strategyCard(week){
+  const rows=PHASES.map(p=>`<div class="meal"><div><strong>${esc(p.name)} · tyg. ${p.weeks[0]}–${p.weeks[1]}</strong>${week>=p.weeks[0]&&week<=p.weeks[1]?' <span class="badge plan">teraz</span>':""}<div class="muted">${esc(p.what)}</div><div class="muted">${esc(p.go)}</div></div></div>`).join("");
+  return `<div class="card"><h2>Strategia: fazy w 28 tygodniach</h2>
+    <p class="muted">Kolejność jest wyborem (MODEL), nie wynikiem badań: najpierw odbudowa siły i masy mięśniowej przy utrzymaniu, potem umiarkowana redukcja. Mocny deficyt razem z budową mięśni się nie sprawdza. Lżejsze tygodnie treningowe: 12, 18, 24 i 28. Tydzień 6 to kontrola, nie deload.</p>${rows}</div>`;
 }
 
 function renderPlan(week){
@@ -669,22 +737,32 @@ function renderPlan(week){
   document.getElementById("p-plan").innerHTML = `
     <div class="track">${cards}</div>
     <div class="weekbar" id="weekbar-p"></div>
+    ${volumeCard(week)}
+    ${strategyCard(week)}
     <div class="card">
-      <h2>Przebieg wizyty</h2>
-      <p>1. Kardio wejściowe 5–7 min — rower albo orbitrek, łatwy oddech.</p>
-      <p>2. Mobilizacja 6–8 min — biodra, tył uda i czworogłowy w dniach dolnych, klatka i łopatki w dniach górnych. Zakres tylko do komfortu.</p>
-      <p>3. Serie wejściowe 4–5 min — dwie lekkie serie pierwszego ćwiczenia.</p>
-      <p>4. Trening właściwy ok. 35–45 min — przerwy 90–120 s na głównych ruchach, 60–75 s na izolacjach.</p>
-      <p>5. Brzuch i postawa ok. 8 min — dead bug, Pallof albo face pull i deska bokiem. Bez ciężkich spięć tułowia.</p>
-      <p>6. Zakończenie 4–6 min — spokojny rower albo marsz i zapis serii.</p>
+      <h2>Przebieg wizyty (60–75 min)</h2>
+      <p>1. Kardio wejściowe 5 min — rower albo orbitrek, łatwy oddech.</p>
+      <p>2. Mobilizacja 4 min — nogi i biodra w dniach dolnych, klatka i łopatki w dniach górnych. Zakres tylko do komfortu.</p>
+      <p>3. Serie wejściowe ok. 3 min — dwie lekkie serie pierwszego ćwiczenia.</p>
+      <p>4. Trening właściwy 40–50 min — główne ruchy z przerwą 90–120 s, izolacje 60–90 s, część ćwiczeń w superseriach (naprzemiennie, przerwa po obu).</p>
+      <p>5. Brzuch i postawa ok. 6 min — dwa krótkie ćwiczenia.</p>
+      <p>6. Zakończenie 3–4 min — spokojny marsz i zapis serii. Szacunki czasu to model, sprawdź je w pierwszych dwóch tygodniach każdego bloku.</p>
     </div>
     <div class="card">
-      <h2>Jak dokładać ciężar</h2>
-      <p>Ciężar w planie rośnie stopniowo od startu (tydzień 1–2) do około tygodnia 21. Tydzień 1 nie jest kopią tygodnia 24: na starcie są 2 serie i RIR 4, w bloku B główne ruchy mają 4 serie, w bloku C więcej serii ma góra, a tydzień 24 to 3 serie przy wyraźnie wyższym ciężarze. Tygodnie 6 i 28 są lżejsze. Jeśli wszystkie serie weszły czysto przy zaplanowanym RIR, możesz dołożyć minimalny stopień wcześniej. Nie dokładaj, gdy technika się psuje, pojawia się dyskomfort albo RIR spada poniżej planu.</p>
+      <h2>Jak dokładać ciężar (podwójna progresja)</h2>
+      <p>Ćwiczenie ma zakres powtórzeń, np. 8–12. Zaczynasz od dolnej granicy przy zaplanowanym RIR. Gdy we wszystkich seriach dojdziesz do górnej granicy przy RIR nie niższym niż w planie, następnym razem dokładasz najmniejszy krok ciężaru i wracasz do dolnej granicy. Kilogramy w planie to orientacyjny start i cel (założenia), nie sufit i nie obowiązek. Aplikacja podpowiada ciężar z Twojej ostatniej sesji.</p>
+      <p><strong>Nie dokładaj</strong>, gdy: technika się psuje, RIR spada poniżej planu, wykonałeś mniej niż 85–90% serii, słabo spałeś albo chorujesz, albo ocena w skali 0–10 (niżej) przekracza 3. Gdy w dwóch kolejnych sesjach nie utrzymujesz powtórzeń, zejdź o jeden krok.</p>
     </div>
     <div class="card">
-      <h2>Dlaczego ten zestaw</h2>
-      <p>Bloki różnią się objętością, powtórzeniami i ciężarem, nie tylko nazwą: najpierw adaptacja i nauka ruchu, potem więcej serii na głównych ćwiczeniach, rozwój góry i szlif z lżejszym końcem planu. Ciężary startowe są orientacyjne — dostosuj je do siebie tak, żeby serie kończyły się z zaplanowanym zapasem (RIR). Każda jednostka ma część na brzuch i postawę: dead bug, Pallof, face pull, wznosy Y i krótka deska bokiem albo spacer farmerski. Zakres ruchu zawsze kontrolowany i bez dyskomfortu.</p>
+      <h2>Skala samopoczucia 0–10</h2>
+      <p>Po treningu i następnego ranka oceń ogólne obciążenie i dyskomfort w skali 0–10.</p>
+      <p><strong>0–3:</strong> normalnie, progresja wg planu. <strong>4–5:</strong> ciężar i serie zostają, nie dokładasz. <strong>Powyżej 5 albo gorzej rano niż wieczorem:</strong> użyj zamiennika ćwiczenia albo zejdź o 10–20% ciężaru. Gdy się powtórzy, skonsultuj się ze specjalistą.</p>
+      <p><strong>Przerwij trening</strong> przy ostrych, kłujących lub promieniujących objawach, zawrotach głowy, duszności albo ucisku w klatce. Zalecenia prowadzącego specjalisty mają pierwszeństwo przed planem.</p>
+    </div>
+    <div class="card">
+      <h2>Lżejszy tydzień i nawyki</h2>
+      <p>Lżejsze tygodnie są w planie (12, 18, 24, 28), a dodatkowo wprowadź je od razu, gdy przez 1–2 tygodnie spada wykonanie, sen albo motywacja, po sprawdzeniu snu i kalorii: 1 tydzień z serii mniejszą o 30–50%, RIR 3–4, te same ćwiczenia.</p>
+      <p><strong>Sen:</strong> cel co najmniej 7 h, stałe pory. Po 1–2 nocach poniżej 6 h: bez rekordów i bez dokładania serii. <strong>Kroki:</strong> zmierz bazę przez 7 dni telefonem. 8–10 tys. kroków to odniesienie zdrowotne, nie wymóg. W redukcji lepiej dodać 1500–2000 kroków niż ciąć kalorie, gdy to wygodniejsze. W fazie redukcji możesz dodać 1–2 sesje 20–30 min niskoudarowego cardio (rower, marsz pod górę) w dni bez siły.</p>
     </div>
     ${renderWorkouts(week)}`;
   fillWeekbar("weekbar-p", week);
@@ -696,84 +774,151 @@ function renderPlan(week){
 function fillWeekbar(id, week){
   const bar=document.getElementById(id);
   if(!bar) return;
-  bar.innerHTML = Array.from({length:28},(_,i)=>`<button type="button" aria-pressed="${i+1===week}" data-w="${i+1}">${i+1}</button>`).join("");
+  bar.innerHTML = Array.from({length:28},(_,i)=>`<button type="button" aria-pressed="${i+1===week}" data-w="${i+1}"${isDeload(i+1)?' aria-label="Tydzień '+(i+1)+', lżejszy"':""}>${i+1}${isDeload(i+1)?"↓":""}</button>`).join("");
   bar.querySelectorAll("button").forEach(b=>b.onclick=()=>setWeek(Number(b.dataset.w)));
   const active=bar.querySelector('[aria-pressed="true"]');
   if(active) active.scrollIntoView({inline:"center",block:"nearest"});
 }
 
-function nutriFor(week){return NUTRITION.find(n=>n.id===blockOf(week).id)}
+function fmtRange(a,b,unit){
+  const f=x=>String(Math.round(x));
+  return a===b?`${f(a)} ${unit}`:`${f(a)}–${f(b)} ${unit}`;
+}
+function profileInputs(){
+  const s=getSettings();
+  return `<div class="grid2">
+      <label class="field"><span>Moja masa ciała (kg, średnia 7 dni)</span><input id="pf-bw" type="text" inputmode="decimal" autocomplete="off" value="${esc(s.bw!=null?String(s.bw).replace(".",","):"")}" placeholder="np. do uzupełnienia"></label>
+      <label class="field"><span>Moje utrzymanie (kcal, po kalibracji)</span><input id="pf-maint" type="text" inputmode="numeric" autocomplete="off" value="${esc(s.maint!=null?String(s.maint):"")}" placeholder="do uzupełnienia"></label>
+    </div>
+    <p class="muted">Te dwie liczby zostają tylko na tym urządzeniu (są w kopii zapasowej). Bez nich widzisz same zasady względne.</p>`;
+}
+function offText(o){
+  const f=x=>x>0?"+"+x:x<0?"−"+Math.abs(x):"0";
+  return o[0]===0&&o[1]===0?"utrzymanie":`${f(o[0])} do ${f(o[1])}`;
+}
+function targetsHtml(ph){
+  const s=getSettings(); const bw=num(s.bw), mt=num(s.maint);
+  const rel=`<div class="kpis">
+      <div class="kpi"><b class="num">${esc(offText(ph.off))}</b><span>kcal względem utrzymania</span></div>
+      <div class="kpi"><b class="num">${String(ph.p[0]).replace(".",",")}–${String(ph.p[1]).replace(".",",")}</b><span>g białka na kg masy</span></div>
+      <div class="kpi"><b class="num">${String(ph.f[0]).replace(".",",")}–${String(ph.f[1]).replace(".",",")}</b><span>g tłuszczu na kg masy</span></div>
+      <div class="kpi"><b class="num">reszta</b><span>węglowodany</span></div>
+    </div>`;
+  if(bw===null||mt===null||bw<=0||mt<=0) return rel;
+  const lo=mt+ph.off[0], hi=mt+ph.off[1];
+  const pg=[bw*ph.p[0], bw*ph.p[1]], fg=[bw*ph.f[0], bw*ph.f[1]];
+  const pm=(pg[0]+pg[1])/2, fm=(fg[0]+fg[1])/2;
+  const cl=Math.max(0,(lo-pm*4-fm*9)/4), ch=Math.max(0,(hi-pm*4-fm*9)/4);
+  return `<div class="kpis">
+      <div class="kpi"><b class="num">${esc(fmtRange(lo,hi,"").trim())}</b><span>kcal</span></div>
+      <div class="kpi"><b class="num">${esc(fmtRange(pg[0],pg[1],"g"))}</b><span>białko</span></div>
+      <div class="kpi"><b class="num">${esc(fmtRange(fg[0],fg[1],"g"))}</b><span>tłuszcz</span></div>
+      <div class="kpi"><b class="num">${esc(fmtRange(cl,ch,"g"))}</b><span>węglowodany (reszta)</span></div>
+    </div><p class="muted">Węglowodany to reszta energii po białku i tłuszczu (środek zakresu). Wyliczone z Twoich dwóch liczb powyżej.</p>`;
+}
 
 function renderDieta(week){
-  const n = nutriFor(week);
-  const b = blockOf(week);
+  const ph = phaseOf(week);
+  const dl = isDeload(week);
+  const breakNote = dl && ph.id==="R" ? `<p class="callout">Ten tydzień jest lżejszy treningowo. Możesz wtedy zjeść na poziomie utrzymania (opcjonalny tydzień przerwy od deficytu), a potem wrócić do deficytu.</p>` : "";
   document.getElementById("p-dieta").innerHTML = `
     <div class="card">
-      <h2>Kalorie · blok ${esc(b.id)}</h2>
-      <p class="muted">Ramy orientacyjne dla dorosłej osoby trenującej 4 razy w tygodniu. To nie jest indywidualny plan żywieniowy — dopasuj kalorie do własnej masy ciała, celu i samopoczucia. Pasmo startowe opiera się na wzorze Mifflin-St Jeor ze współczynnikiem aktywności 1,5.</p>
-      <div class="kpis">
-        <div class="kpi"><b class="num">${n.kcal[0]}–${n.kcal[1]}</b><span>kcal</span></div>
-        <div class="kpi"><b class="num">${n.p[0]}–${n.p[1]} g</b><span>białko</span></div>
-        <div class="kpi"><b class="num">${n.f[0]}–${n.f[1]} g</b><span>tłuszcz</span></div>
-        <div class="kpi"><b class="num">${n.c[0]}–${n.c[1]} g</b><span>węglowodany</span></div>
-      </div>
-      <p>${esc(n.note)}</p>
-      <p class="muted">Woda ok. 2,5–3,5 l dziennie. Posiłek z białkiem i węglem w ciągu 1–3 godzin wokół treningu.</p>
+      <h2>Faza: ${esc(ph.name)} · tydzień ${week}</h2>
+      <p class="muted">Ramy orientacyjne dla dorosłej osoby trenującej 4 razy w tygodniu. To nie jest indywidualny plan żywieniowy. Kalorie liczysz od własnego utrzymania, które najlepiej ustalić z trendu wagi (2–3 tygodnie kalibracji), a nie z samego wzoru: wzór potrafi się mylić o ok. 10%.</p>
+      <p>${esc(ph.what)}</p>
+      ${breakNote}
+      ${profileInputs()}
+      ${targetsHtml(ph)}
     </div>
     <div class="card">
-      <h2>Przykładowy rozkład dnia · ok. 2750 kcal</h2>
-      <p class="muted">Produkty łatwo dostępne w Polsce. Ilości są przybliżone.</p>
-      <div class="meal"><div><strong>Śniadanie</strong><div class="muted">4 jajka, 70 g płatków owsianych, 250 ml mleka 2%, owoce, 10 g masła orzechowego</div></div><div class="num">ok. 750 kcal</div></div>
-      <div class="meal"><div><strong>Obiad</strong><div class="muted">180 g kurczaka, 80 g suchej kaszy gryczanej albo ryżu, warzywa, 10 g oliwy</div></div><div class="num">ok. 800 kcal</div></div>
-      <div class="meal"><div><strong>Przekąska</strong><div class="muted">250 g twarogu chudego, 30 g miodu, banana</div></div><div class="num">ok. 450 kcal</div></div>
-      <div class="meal"><div><strong>Kolacja</strong><div class="muted">150 g ryby albo indyka, 300 g ziemniaków, surówka, 15 g oliwy</div></div><div class="num">ok. 750 kcal</div></div>
+      <h2>Co mierzyć i kiedy zmieniać</h2>
+      <div class="meal"><div><strong>Waga</strong><div class="muted">Codziennie rano po toalecie. Oceniasz średnią 7 dni i porównujesz średnie z 2–3 ostatnich tygodni, nie pojedynczy dzień.</div></div><div>co 2 tyg.</div></div>
+      <div class="meal"><div><strong>Talia i brzuch</strong><div class="muted">Dwa pomiary, średnia. Te same miejsca i pora.</div></div><div>co 1–2 tyg.</div></div>
+      <div class="meal"><div><strong>Barki (najszerszy punkt), klatka, ramię, udo</strong><div class="muted">Dla sylwetki w kształcie V śledź stosunek barków do talii.</div></div><div>co 4 tyg.</div></div>
+      <div class="meal"><div><strong>Zdjęcia</strong><div class="muted">To samo światło, dystans i napięcie. Prywatnie, tylko dla Ciebie.</div></div><div>co 4 tyg.</div></div>
+      <div class="meal"><div><strong>Siła w 6 ćwiczeniach kotwicach</strong><div class="muted">Wyciskanie sztangi leżąc, wyciskanie hantli na skosie, ściąganie drążka, wiosło, RDL, leg press. Ciężar × powtórzenia × RIR.</div></div><div>oceny co 2 tyg.</div></div>
+      <div class="meal"><div><strong>% tłuszczu</strong><div class="muted">Zawsze ta sama metoda i warunki. Liczy się trend, nie wartość bezwzględna.</div></div><div>co 8–12 tyg.</div></div>
     </div>
     <div class="card">
-      <h2>Korekta co 2 tygodnie</h2>
-      <p>Waga w górę szybciej niż ok. 0,3 kg/tydzień i talia w górę: −150 kcal z węgli. Waga w dół, a treningi wchodzą ciężej: +150 kcal z węgli. Białko zostaje w paśmie 170–180 g.</p>
+      <h2>Progi decyzyjne</h2>
+      <p><strong>Odbudowa → wcześniejsza redukcja:</strong> średnia talia o co najmniej 1 cm wyższa niż na starcie przez 3 tygodnie przy stabilnej lub rosnącej wadze i rosnącej sile, albo decyzja w tygodniu 8.</p>
+      <p><strong>W redukcji:</strong> średnia 7 dni spada o 0,25–0,5% masy na tydzień: bez zmian. Szybciej niż 0,7% na tydzień: dodaj 150–250 kcal. Wolniej niż ok. 0,15% na tydzień po 3 tygodniach i talia nie spada: odejmij 100–150 kcal albo dodaj 1500–2000 kroków (jedno z dwóch).</p>
+      <p><strong>Siła:</strong> gdy w dwóch kolejnych sesjach nie utrzymujesz powtórzeń na tym samym ciężarze i RIR, nie pogłębiaj deficytu. Sprawdź sen, kalorie i skalę 0–10, rozważ tydzień na utrzymaniu.</p>
+      <p><strong>Rosnąca waga w odbudowie:</strong> szybciej niż 0,3 kg na tydzień w średniej 7 dni i talia w górę: −150 kcal z węglowodanów.</p>
+      <p class="muted">Utrzymujące się zmęczenie, spadek siły mimo korekt, pogorszenie snu lub nastroju albo niewyjaśniona utrata masy bez deficytu to sygnał, żeby skonsultować się ze specjalistą, a nie tylko korygować plan.</p>
+    </div>
+    <div class="card">
+      <h2>Przykładowy rozkład dnia</h2>
+      <p class="muted">Produkty łatwo dostępne w Polsce. Ilości skaluj do swojej kalorii. Udział w dziennej energii podany w procentach.</p>
+      <div class="meal"><div><strong>Śniadanie</strong><div class="muted">4 jajka, 70 g płatków owsianych, 250 ml mleka 2%, owoce, 10 g masła orzechowego</div></div><div class="num">ok. 27%</div></div>
+      <div class="meal"><div><strong>Obiad</strong><div class="muted">180 g kurczaka, 80 g suchej kaszy gryczanej albo ryżu, warzywa, 10 g oliwy</div></div><div class="num">ok. 29%</div></div>
+      <div class="meal"><div><strong>Przekąska</strong><div class="muted">250 g twarogu chudego, 30 g miodu, banan</div></div><div class="num">ok. 17%</div></div>
+      <div class="meal"><div><strong>Kolacja</strong><div class="muted">150 g ryby albo indyka, 300 g ziemniaków, surówka, 15 g oliwy</div></div><div class="num">ok. 27%</div></div>
+      <p class="muted">Błonnik co najmniej 25 g dziennie, warzywa i owoce co najmniej 400 g dziennie. Płyny: pij do pragnienia, kolor moczu jasnożółty (nie ma jednej liczby litrów dla wszystkich; potrzeby wody pokrywają też jedzenie). Posiłek z białkiem i węglem w ciągu 1–3 godzin wokół treningu.</p>
     </div>
     <div class="card">
       <h2>Suplementacja</h2>
       <p class="muted">Informacja ogólna, nie zalecenie medyczne. Jedzenie pokrywa większość potrzeb.</p>
-      <div class="meal"><div><strong>Kreatyna monohydrat</strong><div class="muted">3–5 g dziennie, stała pora, z posiłkiem albo po treningu. Nie trzeba ładować.</div></div><div>codziennie</div></div>
-      <div class="meal"><div><strong>Białko serwatkowe</strong><div class="muted">Tylko jeśli z jedzenia nie schodzisz 170–180 g. Typowa porcja 25–30 g białka (ok. 30–35 g proszku).</div></div><div>w razie braków</div></div>
+      <div class="meal"><div><strong>Kreatyna monohydrat</strong><div class="muted">3–5 g dziennie, stała pora, z posiłkiem albo po treningu. Nie trzeba ładować. Może podnieść wagę na wadze (woda w mięśniach), więc nie traktuj tego jako tłuszczu.</div></div><div>codziennie</div></div>
+      <div class="meal"><div><strong>Białko serwatkowe</strong><div class="muted">Tylko jeśli z jedzenia nie schodzisz do swojego zakresu białka. Typowa porcja 25–30 g białka (ok. 30–35 g proszku).</div></div><div>w razie braków</div></div>
       <div class="meal"><div><strong>Witamina D3</strong><div class="muted">Często używana w sezonie o mniejszym słońcu. Dawkę warto ustalić na podstawie własnych badań, nie z planu treningowego.</div></div><div>opcjonalnie</div></div>
       <div class="meal"><div><strong>Omega-3</strong><div class="muted">Opcja, gdy w diecie jest mało ryb. Nie zastępuje białka ani treningu.</div></div><div>opcjonalnie</div></div>
       <p class="muted">Kofeina przed treningiem jest opcjonalna i indywidualna. Nie dodaję innych preparatów do stałej listy.</p>
     </div>`;
+  const bw=$("pf-bw"), mt=$("pf-maint");
+  if(bw) bw.onchange=()=>{const v=num(bw.value); saveSettings({bw:(v!==null&&v>0)?v:null}); renderDieta(week)};
+  if(mt) mt.onchange=()=>{const v=num(mt.value); saveSettings({maint:(v!==null&&v>0)?Math.round(v):null}); renderDieta(week)};
 }
 
 function loadJSON(key, fallback){
   try{return JSON.parse(localStorage.getItem(key)||"") || fallback;}catch(e){return fallback;}
 }
 
+function avgOf(rows,key){const v=rows.map(r=>num(r[key])).filter(x=>x!==null); return v.length?v.reduce((a,b)=>a+b,0)/v.length:null}
+function trendCard(rows){
+  const day=86400000, now=Date.now();
+  const dated=rows.map(r=>({r,t:new Date(String(r.date)+"T12:00:00").getTime()})).filter(x=>Number.isFinite(x.t));
+  const cur=dated.filter(x=>now-x.t<=7*day).map(x=>x.r), prev=dated.filter(x=>now-x.t>7*day&&now-x.t<=14*day).map(x=>x.r);
+  const a=avgOf(cur,"kg"), b=avgOf(prev,"kg");
+  let line="Za mało wpisów masy z ostatnich 14 dni, żeby policzyć trend. Wpisuj wagę codziennie rano.";
+  if(a!==null&&b!==null){
+    const pct=(a-b)/b*100; const f=x=>(x>0?"+":x<0?"−":"")+Math.abs(x).toFixed(2).replace(".",",");
+    line=`Średnia z ostatnich 7 dni: ${a.toFixed(1).replace(".",",")} kg. Zmiana względem poprzednich 7 dni: ${f(a-b)} kg (${f(pct)}% tygodniowo). W redukcji celem jest −0,25 do −0,5% na tydzień.`;
+  }
+  const last=rows.length?rows[0]:null; const sh=last?num(last.barki):null, wa=last?num(last.talia):null;
+  const ratio = (sh!==null&&wa!==null&&wa>0) ? `<p>Barki / talia w ostatnim wpisie: <strong>${(sh/wa).toFixed(2).replace(".",",")}</strong>. Śledź kierunek zmiany, nie wartość docelową.</p>` : "";
+  return `<div class="card"><h2>Trend</h2><p>${esc(line)}</p>${ratio}</div>`;
+}
 function renderPomiary(){
   const rows = loadJSON(LS.measures, []);
   const table = rows.length? `<div class="table-wrap"><table>
-    <thead><tr><th>Data</th><th>Masa</th><th>Talia</th><th>Brzuch</th><th>Klatka</th><th>Biceps</th><th>Udo</th><th>Łydka</th><th></th></tr></thead>
+    <thead><tr><th>Data</th><th>Masa</th><th>Talia</th><th>Brzuch</th><th>Barki</th><th>Klatka</th><th>Biceps</th><th>Udo</th><th>Łydka</th><th>% tł.</th><th></th></tr></thead>
     <tbody>${rows.map((r,i)=>`<tr>
-      <td>${esc(r.date)}</td><td>${esc(r.kg)}</td><td>${esc(r.talia)}</td><td>${esc(r.brzuch)}</td>
-      <td>${esc(r.klatka)}</td><td>${esc(r.biceps)}</td><td>${esc(r.udo)}</td><td>${esc(r.lydka)}</td>
+      <td>${esc(r.date)}</td><td>${esc(r.kg)}</td><td>${esc(r.talia)}</td><td>${esc(r.brzuch)}</td><td>${esc(r.barki||"")}</td>
+      <td>${esc(r.klatka)}</td><td>${esc(r.biceps)}</td><td>${esc(r.udo)}</td><td>${esc(r.lydka)}</td><td>${esc(r.fat||"")}</td>
       <td><button class="btn btn-ghost" type="button" data-del="${i}">Usuń</button></td>
     </tr>`).join("")}</tbody></table></div>` : `<p class="muted">Brak zapisanych pomiarów. Wpisy zostają tylko na tym urządzeniu.</p>`;
   document.getElementById("p-pomiary").innerHTML = `
     <div class="card">
       <h2>Nowy pomiar</h2>
-      <p class="muted">Najlepiej rano, po toalecie, przed jedzeniem, taśma w tych samych miejscach.</p>
+      <p class="muted">Najlepiej rano, po toalecie, przed jedzeniem, taśma w tych samych miejscach. Obwody mierz dwa razy i wpisz średnią. Barki: najszerszy punkt. Procent tłuszczu tylko jeśli masz powtarzalną metodę, zawsze tę samą.</p>
       <form id="m-form">
         <div class="grid2">
           <label class="field"><span>Data</span><input name="date" type="date" required></label>
           <label class="field"><span>Masa (kg)</span><input name="kg" type="number" step="0.1" inputmode="decimal" required></label>
           <label class="field"><span>Talia (cm)</span><input name="talia" type="number" step="0.1" inputmode="decimal"></label>
           <label class="field"><span>Brzuch (cm)</span><input name="brzuch" type="number" step="0.1" inputmode="decimal"></label>
+          <label class="field"><span>Barki (cm)</span><input name="barki" type="number" step="0.1" inputmode="decimal"></label>
           <label class="field"><span>Klatka (cm)</span><input name="klatka" type="number" step="0.1" inputmode="decimal"></label>
           <label class="field"><span>Biceps (cm)</span><input name="biceps" type="number" step="0.1" inputmode="decimal"></label>
           <label class="field"><span>Udo (cm)</span><input name="udo" type="number" step="0.1" inputmode="decimal"></label>
           <label class="field"><span>Łydka (cm)</span><input name="lydka" type="number" step="0.1" inputmode="decimal"></label>
+          <label class="field"><span>% tłuszczu (opcjonalnie)</span><input name="fat" type="number" step="0.1" inputmode="decimal"></label>
         </div>
         <button class="btn btn-primary" type="submit">Zapisz pomiar</button>
       </form>
     </div>
+    ${trendCard(rows)}
     <div class="card"><h2>Historia</h2>${table}</div>`;
   const form=document.getElementById("m-form");
   form.date.value = new Date().toISOString().slice(0,10);
@@ -804,7 +949,7 @@ function saveJSON(key, val){
   try{localStorage.setItem(key, JSON.stringify(val)); return true}
   catch(e){toast("Brak miejsca w pamięci przeglądarki. Zrób kopię i usuń stare dane."); return false}
 }
-const DEFAULT_SETTINGS = {restMain:120, restIso:90, restWarm:60, keepAwake:true, sound:true, vibrate:true, lastBackup:null, restEx:{}};
+const DEFAULT_SETTINGS = {restMain:120, restIso:90, restWarm:60, keepAwake:true, sound:true, vibrate:true, lastBackup:null, restEx:{}, bw:null, maint:null};
 function getSettings(){return Object.assign({}, DEFAULT_SETTINGS, loadJSON(LS.settings, {}))}
 function saveSettings(patch){return saveJSON(LS.settings, Object.assign(getSettings(), patch))}
 const pad2 = n => String(n).padStart(2,"0");
@@ -860,12 +1005,13 @@ const ALIASES = {
   "Wyciskanie hantli na skosie":["Incline Bench Press (Dumbbell)","Wyciskanie na ławce skośnej (hantle)","Incline Dumbbell Press"],
   "Ściąganie drążka nachwytem (szerokie)":["Lat Pulldown (Cable)","Lat Pulldown (Machine)","Ściąganie drążka wyciągu górnego","Ściąganie drążka (maszyna)","Wide Grip Lat Pulldown"],
   "Pompki na poręczach (dipy) z obciążeniem":["Dipy na klatkę piersiową z obciążeniem","Pompki na poręczach z obciążeniem","Triceps Dip (Weighted)","Weighted Dip"],
+  "Wyciskanie na maszynie poziomej (siedząc)":["Chest Press (Machine)","Machine Chest Press","Leverage Chest Press","Wyciskanie na maszynie","Wyciskanie na klatkę (maszyna)","Wyciskanie na maszynie dźwigniowej"],
   "Wiosłowanie z podparciem klatki":["Chest Supported Incline Row (Dumbbell)","Chest Supported Row"],
   "Wznosy bokiem na wyciągu":["Single Arm Lateral Raise (Cable)","Wznosy bokiem jednorącz (wyciąg)","Cable Lateral Raise"],
   "Uginanie ze sztangą łamaną":["EZ Bar Biceps Curl","Uginanie ramion (sztanga łamana)"],
   "Hip thrust":["Hip Thrust (Barbell)"],
   "RDL z kontrolowanym zakresem":["Romanian Deadlift (Barbell)","Martwy ciąg rumuński (sztanga)","Romanian Deadlift","RDL"],
-  "Leg press (stopy trochę wyżej, bez głębokiego zgięcia)":["Leg Press (Machine)","Leg Press"],
+  "Leg press (kontrolowana głębokość)":["Leg Press (Machine)","Leg Press"],
   "Uginanie ud siedząc":["Seated Leg Curl (Machine)","Seated Leg Curl"],
   "Wspięcia na palce siedząc":["Seated Calf Raise","Wspięcia na palce w siadzie (maszyna)","Wspięcia na palce siedząc (maszyna)"],
   "Wyciskanie sztangi leżąc":["Bench Press (Barbell)","Wyciskanie leżąc (sztanga)"],
@@ -876,7 +1022,7 @@ const ALIASES = {
   "Wznosy bokiem hantlami":["Lateral Raise (Dumbbell)","Wznosy bokiem (hantle)"],
   "Prostowanie na wyciągu + uginanie młotkowe":["Triceps Pushdown","Triceps Rope Pushdown","Prostowanie ramion na wyciągu górnym (pushdown)","Prostowanie ramion na wyciągu górnym z liną"],
   "Przysiad do wygodnej wysokości":["Box Squat (Barbell)"],
-  "Odwrotny wypad (krótki krok, kolano nie wychodzi mocno w przód)":["Reverse Lunge (Dumbbell)","Reverse Lunge"],
+  "Odwrotny wypad (krótki krok, tułów prosto)":["Reverse Lunge (Dumbbell)","Reverse Lunge"],
   "Prostowanie nóg siedząc (środkowy zakres)":["Leg Extension (Machine)","Prostowanie nóg (maszyna)"],
   "Prostowanie tułowia na ławce 45°":["Back Extension (Hyperextension)","Hyperextension"],
   "Wspięcia stojąc":["Standing Calf Raise (Machine)","Standing Calf Raise (Smith)"],
@@ -885,7 +1031,7 @@ const ALIASES = {
   "Wznosy Y leżąc przodem na ławce":["Chest Supported Y Raise (Dumbbell)"],
   "Face pull (łopatki w dół i w tył)":["Face Pull","Face pull (wyciąg)"],
   "Pallof press":["Pallof Press"],
-  "Deska bokiem na kolanie":["Side Plank"],
+  "Deska bokiem (łatwiejszy wariant)":["Side Plank"],
   "Spacer farmerski, tułów wysoki":["Farmer's Walk","Farmers Walk"]
 };
 function planExNames(){
@@ -893,7 +1039,7 @@ function planExNames(){
   [EX,CORE].forEach(o=>Object.values(o).forEach(list=>list.forEach(x=>{if(!set.includes(x.n))set.push(x.n)})));
   return set;
 }
-let _aliasIdx=null, _aliasUserSig="";
+let _aliasIdx=null, _aliasUserSig="", _aliasBases=[];
 function aliasIndex(){
   const user=loadJSON(LS.aliases,{}); const sig=JSON.stringify(user);
   if(_aliasIdx&&sig===_aliasUserSig) return _aliasIdx;
@@ -903,9 +1049,11 @@ function aliasIndex(){
   names.forEach(n=>{const b=normKey(n.split(" (")[0]); if(!base[b]) base[b]=n; idx[normKey(n)]=base[b]});
   Object.entries(ALIASES).forEach(([plan,list])=>{const c=idx[normKey(plan)]||plan; idx[normKey(plan)]=c; list.forEach(a=>{idx[normKey(a)]=c})});
   Object.entries(user).forEach(([k,plan])=>{ if(plan) idx[k]=idx[normKey(plan)]||plan });
+  _aliasBases=names.map(n=>[normKey(n.split(" (")[0]),idx[normKey(n)]||n]).filter(x=>x[0].length>=8);
   _aliasIdx=idx; _aliasUserSig=sig; return idx;
 }
-function canonEx(name){const i=aliasIndex(); return i[normKey(name)]||String(name||"")}
+/* starsze nazwy ćwiczeń (sprzed zmian w planie) łączą się z obecnymi po początku nazwy, żeby historia się nie rozjechała */
+function canonEx(name){const i=aliasIndex(); const k=normKey(name); if(i[k]) return i[k]; for(const [b,c] of _aliasBases){ if(k.startsWith(b)) return c } return String(name||"")}
 function isPlanEx(name){return !!aliasIndex()[normKey(name)]}
 
 /* --- parser CSV (czysty JS) --- */
@@ -1135,13 +1283,45 @@ function rirNumFor(week){
   return String(m[2]?Math.max(+m[1],+m[2]):+m[1]);
 }
 function repsLow(txt){const m=/(\d+)/.exec(String(txt)); return m?m[1]:""}
+function lastAppSession(canon){
+  const now=Date.now(), by=new Map();
+  for(const t of loadJSON(LS.sets,[])){
+    if(t.src!=="app"||t.type==="warmup"||t.kg==null||t.reps==null) continue;
+    if(isDeload(t.week)||now-(t.ts||0)>28*86400000) continue;
+    if(canonEx(t.ex)!==canon) continue;
+    let g=by.get(t.sid); if(!g){g={ts:t.ts||0,sets:[]}; by.set(t.sid,g)} g.sets.push(t);
+  }
+  return [...by.values()].sort((a,b)=>b.ts-a.ts)[0]||null;
+}
+/* podwójna progresja: ciężar z ostatniej sesji w aplikacji, +krok gdy wszystkie serie były na górze zakresu przy RIR nie niższym niż w planie */
+function suggestKg(it, week){
+  const ex=it.ex, base=loadFor(ex,week);
+  if(ex.bw) return {kg:base, note:""};
+  const last=lastAppSession(canonEx(it.n));
+  if(!last||!last.sets.length) return {kg:base, note:""};
+  const hi=repsHi(it.repsTxt), lo=repsLoNum(it.repsTxt), step=ex.step||2.5;
+  const rm=/(\d)/.exec(rirOf(week)); const rirMin=rm?+rm[1]:0;
+  const lastKg=Math.max(...last.sets.map(t=>t.kg));
+  const top=last.sets.filter(t=>t.kg===lastKg);
+  let next=lastKg, why=`ostatnio ${fmtNum(lastKg)} kg, bez zmiany`;
+  if(top.some(t=>lo!==null&&t.reps<lo)){ next=Math.max(step,lastKg-step); why=`ostatnio ${fmtNum(lastKg)} kg, mniej niż dolna granica: krok w dół`; }
+  else if(hi!==null&&top.length>=2&&top.every(t=>t.reps>=hi&&(t.rir==null||t.rir>=rirMin))){ next=lastKg+step; why=`ostatnio ${fmtNum(lastKg)} kg, wszystkie serie na górze zakresu: krok w górę`; }
+  if(isDeload(week)){ next=Math.max(step,roundTo(lastKg*0.9,step)); why=`tydzień lżejszy: ok. −10% z ${fmtNum(lastKg)} kg`; }
+  if(ex.hard){ const cap=capFor(ex,week); if(cap!=null&&next>cap){ next=cap; why+=`; limit orientacyjny ${fmtNum(cap)} kg w tym bloku`; } }
+  return {kg:next, note:why};
+}
 function buildActive(dayId){
   const week=currentWeekSel(); const rirT=rirNumFor(week);
   const items=[];
-  EX[dayId].forEach((ex,i)=>items.push({n:ex.n, kind:ex.kind||"iso", core:false, unit:"", ex, sets:setsFor(ex,week,i,dayId), repsTxt:repsFor(ex,week)}));
-  CORE[dayId].forEach(ex=>items.push({n:ex.n, kind:"iso", core:true, unit:/\bs\b/.test(ex.r||"")?"s":"", ex, sets:setsForCore(week), repsTxt:ex.r}));
+  EX[dayId].forEach(ex=>{
+    const sets=setsFor(ex,week); if(!sets) return;
+    const partner=ex.ss?EX[dayId].find(x=>x.ss===ex.ss[0]+(ex.ss[1]==="1"?"2":"1")&&setsFor(x,week)>0):null;
+    items.push({n:ex.n, kind:ex.kind||"iso", core:false, unit:"", ex, sets, repsTxt:repsFor(ex,week,dayId), ss:partner?ex.ss:"", ssWith:partner?partner.n:""});
+  });
+  CORE[dayId].forEach(ex=>items.push({n:ex.n, kind:"iso", core:true, unit:/\bs\b/.test(ex.r||"")?"s":"", ex, sets:setsForCore(week,ex), repsTxt:ex.r}));
   items.forEach((it,xi)=>{
-    const kg=loadFor(it.ex,week); it.bw=kg==="bw"; it.planKg=(kg==="bw"||kg==null)?null:kg;
+    const sg=it.core?{kg:loadFor(it.ex,week),note:""}:suggestKg(it,week);
+    const kg=sg.kg; it.bw=kg==="bw"; it.planKg=(kg==="bw"||kg==null)?null:kg; it.sugNote=sg.note||"";
     it.rirTxt=it.core?"":rirT; it.rows=[];
     const step=it.ex.step||2.5;
     if(xi===0&&it.planKg!=null){
@@ -1214,8 +1394,8 @@ function exerciseHtml(it,xi){
   const undone=it.rows.filter(r=>!r.done).length;
   return `<section class="ses-ex" data-x="${xi}" aria-label="${esc(it.n)}">
     <div class="ses-head"><h3>${esc(it.n)}</h3>${PLAN_DBID[it.n]?`<button type="button" class="btn btn-ghost" data-ex-open="${esc(PLAN_DBID[it.n])}" aria-label="Technika i zdjęcia: ${esc(it.n)}">Technika</button>`:""}</div>
-    <div class="ses-meta"><span class="chip">cel ${it.sets} × ${esc(it.repsTxt)}</span>${it.rirTxt?`<span class="chip">RIR ${esc(it.rirTxt)}</span>`:""}${it.planKg!=null?`<span class="chip">plan: ${esc(fmtNum(it.planKg))} kg</span>`:""}<span class="chip">przerwa ${esc(mmss(restFor(it,"n")))}</span></div>
-    <p class="ses-last">${lastTxt}</p>
+    <div class="ses-meta"><span class="chip">cel ${it.sets} × ${esc(it.repsTxt)}</span>${it.rirTxt?`<span class="chip">RIR ${esc(it.rirTxt)}</span>`:""}${it.ss?`<span class="chip">superseria ${esc(it.ss)} · z: ${esc(String(it.ssWith).replace(/\s*\(.*$/,""))}</span>`:""}${it.planKg!=null?`<span class="chip">${it.sugNote?"propozycja":"start orient."}: ${esc(fmtNum(it.planKg))} kg</span>`:`<span class="chip">ciężar wg RIR</span>`}<span class="chip">przerwa ${esc(mmss(restFor(it,"n")))}</span></div>
+    <p class="ses-last">${lastTxt}${it.sugNote?` · ${esc(it.sugNote)}`:""}</p>
     <div class="srow head" aria-hidden="true"><span>Seria</span><span>Poprzednio</span><span>kg</span><span>${it.unit==="s"?"sek.":"Powt."}</span><span>RIR</span><span></span></div>
     ${rows}
     <div class="ses-actions"><button type="button" class="btn btn-ghost" data-act="add">+ Seria</button><button type="button" class="btn btn-ghost" data-act="del" ${undone?"":"disabled"}>− Seria</button></div>
@@ -1411,8 +1591,9 @@ function restFor(it,kind){
   return it.kind==="main"?s.restMain:s.restIso;
 }
 function startRest(it,kind){
-  const sec=restFor(it,kind);
-  rest={endTs:Date.now()+sec*1000, total:sec, label:`Przerwa · ${it.n.replace(/\s*\(.*$/,"")}`, ex:canonEx(it.n), fired:false, kind};
+  let sec=restFor(it,kind), label=`Przerwa · ${it.n.replace(/\s*\(.*$/,"")}`, trans=false;
+  if(kind!=="w"&&it.ss&&/1$/.test(it.ss)&&it.ssWith){ sec=15; trans=true; label=`Superseria · teraz: ${String(it.ssWith).replace(/\s*\(.*$/,"")}`; }
+  rest={endTs:Date.now()+sec*1000, total:sec, label, ex:canonEx(it.n), fired:false, kind, trans};
   localStorage.setItem(LS.rest,JSON.stringify(rest)); showRest();
 }
 function resumeRest(){
@@ -1449,7 +1630,7 @@ function adjustRest(delta){
   if(rest.endTs<=now){ if(delta<0) return; rest.endTs=now+delta*1000; rest.total=delta; }
   else { rest.endTs+=delta*1000; rest.total=Math.max(15,rest.total+delta); if(rest.endTs<=now) rest.endTs=now; }
   rest.fired=false;
-  if(rest.kind!=="w"){ const m=Object.assign({},getSettings().restEx); m[rest.ex]=Math.max(15,Math.round(rest.total)); saveSettings({restEx:m}); }
+  if(rest.kind!=="w"&&!rest.trans){ const m=Object.assign({},getSettings().restEx); m[rest.ex]=Math.max(15,Math.round(rest.total)); saveSettings({restEx:m}); }
   localStorage.setItem(LS.rest,JSON.stringify(rest)); showRest(); tickRest();
 }
 function unlockAudio(){try{actx=actx||new (window.AudioContext||window.webkitAudioContext)(); if(actx.state==="suspended") actx.resume()}catch(e){}}
@@ -1599,7 +1780,7 @@ function wireSettings(){
 
 
 /* ===== baza ćwiczeń (Free Exercise DB, Unlicense) ===== */
-const PLAN_DBID = {"Wyciskanie hantli na skosie": "Incline_Dumbbell_Press", "Ściąganie drążka nachwytem (szerokie)": "Wide-Grip_Lat_Pulldown", "Pompki na poręczach (dipy) z obciążeniem": "Dips_-_Chest_Version", "Wiosłowanie z podparciem klatki": "Dumbbell_Incline_Row", "Wznosy bokiem na wyciągu": "Standing_Low-Pulley_Deltoid_Raise", "Uginanie ze sztangą łamaną": "EZ-Bar_Curl", "Hip thrust": "Barbell_Hip_Thrust", "RDL z kontrolowanym zakresem": "Romanian_Deadlift", "Leg press (stopy trochę wyżej, bez głębokiego zgięcia)": "Leg_Press", "Uginanie ud siedząc": "Seated_Leg_Curl", "Wspięcia na palce siedząc": "Seated_Calf_Raise", "Wyciskanie sztangi leżąc": "Barbell_Bench_Press_-_Medium_Grip", "Wiosłowanie jednorącz na maszynie": "Leverage_Iso_Row", "Wyciskanie hantli siedząc z oparciem": "Seated_Dumbbell_Press", "Ściąganie wyciągu prostymi ramionami": "Straight-Arm_Pulldown", "Rozpiętki na maszynie lub wyciągu": "Butterfly", "Wznosy bokiem hantlami": "Side_Lateral_Raise", "Prostowanie na wyciągu + uginanie młotkowe": "Triceps_Pushdown", "Przysiad do wygodnej wysokości": "Barbell_Squat_To_A_Bench", "Odwrotny wypad (krótki krok, kolano nie wychodzi mocno w przód)": "Dumbbell_Rear_Lunge", "Prostowanie nóg siedząc (środkowy zakres)": "Leg_Extensions", "Prostowanie tułowia na ławce 45°": "Hyperextensions_Back_Extensions", "Wspięcia stojąc": "Standing_Calf_Raises", "Odwodzenie biodra na maszynie": "Thigh_Abductor", "Dead bug (żebra w dół, lędźwie na macie)": "Dead_Bug", "Dead bug (żebra w dół)": "Dead_Bug", "Face pull (łopatki w dół i w tył)": "Face_Pull", "Pallof press": "Pallof_Press", "Deska bokiem na kolanie": "Side_Bridge", "Spacer farmerski, tułów wysoki": "Farmers_Walk"};
+const PLAN_DBID = {"Wyciskanie hantli na skosie": "Incline_Dumbbell_Press", "Ściąganie drążka nachwytem (szerokie)": "Wide-Grip_Lat_Pulldown", "Wyciskanie na maszynie poziomej (siedząc)": "Leverage_Chest_Press", "Wiosłowanie z podparciem klatki": "Dumbbell_Incline_Row", "Wznosy bokiem na wyciągu": "Standing_Low-Pulley_Deltoid_Raise", "Uginanie ze sztangą łamaną": "EZ-Bar_Curl", "Hip thrust": "Barbell_Hip_Thrust", "RDL z kontrolowanym zakresem": "Romanian_Deadlift", "Leg press (kontrolowana głębokość)": "Leg_Press", "Uginanie ud siedząc": "Seated_Leg_Curl", "Wspięcia na palce siedząc": "Seated_Calf_Raise", "Wyciskanie sztangi leżąc": "Barbell_Bench_Press_-_Medium_Grip", "Wiosłowanie jednorącz na maszynie": "Leverage_Iso_Row", "Wyciskanie hantli siedząc z oparciem": "Seated_Dumbbell_Press", "Ściąganie wyciągu prostymi ramionami": "Straight-Arm_Pulldown", "Rozpiętki na maszynie lub wyciągu": "Butterfly", "Wznosy bokiem hantlami": "Side_Lateral_Raise", "Prostowanie na wyciągu + uginanie młotkowe": "Triceps_Pushdown", "Przysiad do wygodnej wysokości": "Barbell_Squat_To_A_Bench", "Odwrotny wypad (krótki krok, tułów prosto)": "Dumbbell_Rear_Lunge", "Prostowanie nóg siedząc (środkowy zakres)": "Leg_Extensions", "Prostowanie tułowia na ławce 45°": "Hyperextensions_Back_Extensions", "Wspięcia stojąc": "Standing_Calf_Raises", "Dead bug (żebra w dół, lędźwie na macie)": "Dead_Bug", "Dead bug (żebra w dół)": "Dead_Bug", "Face pull (łopatki w dół i w tył)": "Face_Pull", "Pallof press": "Pallof_Press", "Deska bokiem (łatwiejszy wariant)": "Side_Bridge"};
 let EXDB=null, EXMETA=null, EXMAP=null, exLoading=null, exShown=40;
 const exui=Object.assign({q:"",mu:"",eq:"",plan:false}, loadJSON("plan28-exui",{}));
 function normTxt(t){return String(t||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/ł/g,"l")}
