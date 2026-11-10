@@ -12,7 +12,7 @@
 <title>Plan 28</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-180.png">
-<meta name="app-version" content="2026-11-10.6-audyt">
+<meta name="app-version" content="2026-11-10.7-objetosc">
 <script>
 try{const t=localStorage.getItem('plan28-theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}
 </script>
@@ -390,16 +390,16 @@ const LS = {
   aliases: "plan28-aliases",
   legacyDone: "plan28-legacy-migrated"
 };
-const APP_VERSION = "2026-11-10.6-audyt";
+const APP_VERSION = "2026-11-10.7-objetosc";
 const SCHEMA = 1;
 const NOBACKUP = [LS.undo, LS.rest, LS.gate, "plan28-intro", "plan28-exui"];
 const JSON_KEYS = [LS.sets, LS.sessions, LS.imports, LS.settings, LS.active, LS.measures, LS.logs, LS.aliases];
 
 const BLOCKS = [
-  {id:"A", name:"Adaptacja", weeks:[1,6], rir:"RIR 4 → 2–3", note:"Tygodnie 1–2: 2 serie na ćwiczenie, RIR 4, nauka pozycji. Tygodnie 3–5: serie rosną o 1 na głównych ruchach. Tydzień 6 to tydzień kontrolny, nie deload: te same serie co w tygodniu 5, RIR 3, ciężar bez zmian, pomiary i przegląd. Superserie skracają sesję."},
-  {id:"B", name:"Kształt", weeks:[7,14], rir:"RIR 2–3", note:"Objętość rośnie powoli, najwyżej o 2 serie na partię co kilka tygodni. Priorytet: boczne partie barków i szerokość pleców. Dół: mniej serii niż góra, zakres kontrolowany. Tydzień 12 jest lżejszy (deload)."},
-  {id:"C", name:"Rozwój", weeks:[15,21], rir:"RIR 2–3", note:"Szczyt objętości bez nowych skoków: góra 20 serii na sesję, dół 14–15. Podwójna progresja zamiast stałej tabeli kilogramów. Tydzień 18 jest lżejszy (deload)."},
-  {id:"D", name:"Szlif", weeks:[22,28], rir:"RIR 2", note:"Mniej serii na klatkę, plecy i ramiona, boczne barki zostają na wysokim poziomie. Tydzień 24 jest lżejszy, tydzień 28 kończy plan: lżej, pomiary, zdjęcia, decyzja o kolejnym etapie."}
+  {id:"A", name:"Adaptacja", weeks:[1,6], rir:"RIR 4 → 2–3", note:"Priorytet programu: górna część pleców i postawa, łydki, brzuch, ramiona oraz uda. Tygodnie 1–2: ok. 60–70% docelowej objętości bloku, RIR 4, nauka pozycji i zakresów. Tygodnie 3–4: objętość rośnie, tygodnie 5–6: poziom docelowy bloku A. Tydzień 6 to tydzień kontrolny, nie deload: te same serie co w tygodniu 5, RIR 3, ciężar bez zmian, pomiary i przegląd. Czas wizyty nie jest ograniczeniem."},
+  {id:"B", name:"Kształt", weeks:[7,14], rir:"RIR 2–3", note:"Objętość rośnie schodkowo (najwyżej +3 serie na partię na jeden poziom): tygodnie 7–10, potem tygodnie 11 i 13–14 (poziom docelowy bloku B). Priorytet: plecy, tylne i boczne barki, ramiona, łydki, brzuch i uda w kontrolowanym zakresie. Tydzień 12 jest lżejszy (deload)."},
+  {id:"C", name:"Rozwój", weeks:[15,21], rir:"RIR 2–3", note:"Szczyt objętości całego planu: o 2–3 serie na partię więcej niż w bloku B (klatka zostaje bez zwiększania wyciskania, praca idzie w skos i rozciągnięcie). To najdłuższe sesje planu, przerw nie skracasz. Podwójna progresja zamiast stałej tabeli kilogramów. Tydzień 18 jest lżejszy (deload)."},
+  {id:"D", name:"Szlif", weeks:[22,28], rir:"RIR 2", note:"Objętość schodzi o 2–3 serie na partię (klatka, plecy, ramiona, barki tylne, uda, łydki, brzuch), boczne barki zostają na szczycie. Tydzień 24 jest lżejszy, tydzień 28 kończy plan: lżej, pomiary, zdjęcia, decyzja o kolejnym etapie."}
 ];
 
 /* Fazy żywieniowe (niezależne od bloków treningowych). Wartości względne, bez liczb kcal: kalorie liczysz od własnego utrzymania. */
@@ -425,64 +425,71 @@ const DAYS = [
   {id:"LB", name:"Lower B", wd:4, label:"Czwartek"}
 ];
 
-/* s = serie na poziom objętości [L0 tyg.1–2, L1 tyg.3–4, L2 tyg.5–8, L3 tyg.9–14, L4 tyg.15–21, L5 tyg.22–27]; 0 = ćwiczenia nie ma jeszcze w planie.
-   m = udział w partiach (bezpośrednio 1, pośrednio 0,5) do tabeli serii na partię. ss = superseria (litera + kolejność). w/cap/step = ciężar startowy, orientacyjny cel i najmniejszy krok.
-   Ciężary to założenia: punkt startu i orientacja, nie obowiązek. Prawdziwa progresja idzie po powtórzeniach i RIR (podwójna progresja). */
+/* s = serie na poziom objętości [L0 tyg.1–2, L1 tyg.3–4, L2 tyg.5–6, L3 tyg.7–10, L4 tyg.11 i 13–14, L5 tyg.15–21, L6 tyg.22–27]; 0 = ćwiczenia nie ma jeszcze w planie.
+   Wzrost sumy serii na partię między kolejnymi poziomami to najwyżej +3. m = udział w partiach (bezpośrednio 1, pośrednio 0,5). pp = ciągnięcie albo pchanie (do stosunku w dniach górnych).
+   ss = superseria (litera + kolejność). w/cap/step = ciężar startowy, orientacyjny cel i najmniejszy krok. Ciężary to założenia (część z historii treningów, część dobrana ostrożnie): punkt startu i orientacja, nie obowiązek. Prawdziwa progresja idzie po powtórzeniach i RIR (podwójna progresja). */
 const EX = {
   UA: [
-    {n:"Wyciskanie hantli na skosie", kind:"main", w:30, step:1, cap:38, s:[2,3,3,3,4,3], m:{klatka:1,"bark przedni":.5,triceps:.5}, ss:"A1", alt:"Wyciskanie sztangi na skosie albo maszyna"},
-    {n:"Ściąganie drążka nachwytem (szerokie)", kind:"main", w:45, step:2.5, cap:75, s:[2,3,3,4,4,3], m:{plecy:1,biceps:.5}, ss:"A2", alt:"Chwyt neutralny (równoległy) albo podciąganie z pomocą"},
-    {n:"Wyciskanie na maszynie poziomej (siedząc)", kind:"main", s:[2,2,2,2,2,2], m:{klatka:1,"bark przedni":.5,triceps:.5}, ss:"B1", alt:"Wyciskanie hantli na ławce płaskiej, chwyt półneutralny"},
-    {n:"Wiosłowanie z podparciem klatki", kind:"main", s:[2,2,3,3,3,3], m:{plecy:1,biceps:.5,"bark tylny":.5}, ss:"B2", alt:"Wiosło na wyciągu siedząc"},
-    {n:"Wznosy bokiem na wyciągu", kind:"iso", w:6.25, step:1.25, cap:12.5, s:[2,3,3,4,4,4], m:{"bark boczny":1}, ss:"C1", alt:"Wznosy hantlami stojąc"},
-    {n:"Uginanie ze sztangą łamaną", kind:"iso", w:30, step:2.5, cap:45, s:[2,2,2,3,3,2], m:{biceps:1}, ss:"C2", alt:"Uginanie na wyciągu"}
+    {n:"Wyciskanie hantli na skosie",kind:"main",w:30,step:1,cap:38,s:[2,2,3,3,3,3,3],m:{"klatka":1,"bark przedni":0.5,"triceps":0.5},pp:"push",alt:"Wyciskanie sztangi na skosie albo maszyna",cue:"Skos ok. 30°, łopatki ściągnięte, opuszczanie 2–3 s. Pchanie tylko w przód i w górę od klatki, bez wyciskania nad głową."},
+    {n:"Rozpiętki na ławce skośnej na wyciągu",kind:"iso",w:12.5,step:1.25,cap:22.5,s:[2,2,2,3,3,3,3],m:{"klatka":1},pp:"push",alt:"Rozpiętki na maszynie albo hantlami na skosie",cue:"Wyciągi nisko, ławka ok. 30–45°. Pełne rozciągnięcie klatki w zakresie komfortowym dla barku, 1 s pauzy w rozciągnięciu, łokcie lekko ugięte."},
+    {n:"Ściąganie drążka nachwytem (szerokie)",kind:"main",w:45,step:2.5,cap:75,s:[2,2,3,3,3,4,3],m:{"plecy":1,"biceps":0.5},pp:"pull",alt:"Chwyt neutralny (równoległy) albo podciąganie z pomocą",cue:"Klatka do drążka, łopatki w dół, łokcie w stronę kieszeni. Bez bujania tułowiem."},
+    {n:"Wiosłowanie z podparciem klatki",kind:"main",w:20,step:2,cap:32,s:[2,3,3,3,3,4,3],m:{"plecy":1,"biceps":0.5,"bark tylny":0.5},pp:"pull",alt:"Wiosło na wyciągu siedząc",cue:"Łokcie na boki (ok. 45–60°), łopatki ściągasz w dół i do siebie, 1 s pauzy. Cel: górna część pleców."},
+    {n:"Odwrotne rozpiętki na maszynie lub wyciągu",kind:"iso",w:7.5,step:1.25,cap:12.5,s:[0,0,0,2,2,2,2],m:{"bark tylny":1},pp:"pull",alt:"Odwrotne rozpiętki z hantlami na ławce skośnej",cue:"Łokcie na wysokości barków, ruch z tylnych barków, bez szarpania i bez odchylania tułowia."},
+    {n:"Face pull (łopatki w dół i w tył)",kind:"iso",w:7.5,step:1.25,cap:15,r:"12–15",s:[2,2,2,2,2,3,2],m:{"bark tylny":1},pp:"pull",alt:"Odwrotne rozpiętki",cue:"Lina na wysokości oczu, ciągniesz do twarzy, na końcu rotacja zewnętrzna dłoni."},
+    {n:"Wznosy bokiem na wyciągu",kind:"iso",w:6.25,step:1.25,cap:12.5,s:[2,2,3,3,5,5,5],m:{"bark boczny":1},alt:"Wznosy hantlami stojąc"},
+    {n:"Uginanie hantli na ławce skośnej",kind:"iso",w:12,step:1,cap:20,s:[2,2,2,2,3,3,3],m:{"biceps":1},ss:"D1",alt:"Uginanie hantli siedząc z oparciem",cue:"Ławka 45–60°, ramiona za tułowiem, pełne rozciągnięcie bicepsa (głowa długa), bez kołysania. Pierwsza w superserii z tricepsem."},
+    {n:"Prostowanie ramion zza głowy na wyciągu (leżąc na ławce)",kind:"iso",w:12.5,step:1.25,cap:22.5,s:[2,2,2,2,3,3,3],m:{"triceps":1},ss:"D2",alt:"Wyciskanie francuskie leżąc ze sztangą łamaną (start ok. 30 kg)",cue:"Łokcie przy głowie, pełne rozciągnięcie głowy długiej tricepsa, opuszczanie 2–3 s. Pozycja leżąca albo pochylona oszczędza barki."},
+    {n:"Wspięcia stojąc",kind:"iso",w:70,step:5,cap:110,r:"8–15",s:[2,2,2,3,3,4,4],m:{"łydki":1},alt:"Wspięcia na suwnicy albo na stopniu ze sztangą",cue:"Pełny zakres, pauza 2 s w rozciągnięciu na dole, kontrolowane opuszczanie, bez odbijania. Zakres 8–15 powtórzeń."},
+    {n:"Allahy na wyciągu (stojąc)",kind:"iso",w:32.5,step:2.5,cap:55,r:"10–15",s:[2,2,2,2,2,2,2],m:{"brzuch":1},alt:"Brzuszki na maszynie brzusznej",cue:"Biodra stabilnie, zwijasz tułów (nie ciągniesz rękami), wydech przy skurczu, powrót 2 s. Dokładaj ciężar po osiągnięciu górnej granicy powtórzeń."}
   ],
   LA: [
-    {n:"Hip thrust", kind:"main", w:90, step:5, cap:150, s:[2,3,3,3,3,3], m:{"tylna taśma":1}, alt:"Mostek z hantlem"},
-    {n:"RDL z kontrolowanym zakresem", kind:"main", w:70, step:2.5, cap:110, s:[2,2,3,3,3,3], m:{"tylna taśma":1}, alt:"Prostowanie tułowia 45° z lekko ugiętymi nogami"},
-    {n:"Leg press (kontrolowana głębokość)", kind:"main", w:150, step:5, cap:200, s:[2,3,3,3,3,3], m:{"czworogłowe":1,"tylna taśma":.5}, alt:"Hack tylko do tej samej, wygodnej wysokości"},
-    {n:"Uginanie ud siedząc", kind:"iso", w:60, step:2.5, cap:95, s:[2,2,2,2,2,2], m:{"tylna taśma":1}, ss:"D1", alt:"Uginanie ud leżąc"},
-    {n:"Wspięcia na palce siedząc", kind:"iso", w:30, step:2.5, cap:60, s:[2,2,2,3,3,3], m:{"łydki":1}, ss:"D2", alt:"Wspięcia stojąc"}
+    {n:"Leg press (kontrolowana głębokość)",kind:"main",w:150,step:5,cap:200,s:[2,2,3,3,3,3,3],m:{"czworogłowe":1,"tylna taśma":0.5},alt:"Hack tylko do tej samej, wygodnej wysokości",cue:"Zakres ruchu w ćwiczeniach na uda zaczynasz w komfortowym środku i poszerzasz go małym krokiem dopiero po 2 sesjach z oceną 0–3 w skali samopoczucia. Opuszczanie 3 s."},
+    {n:"RDL z kontrolowanym zakresem",kind:"main",w:70,step:2.5,cap:110,s:[2,2,3,3,3,3,3],m:{"tylna taśma":1},alt:"Prostowanie tułowia 45° z lekko ugiętymi nogami"},
+    {n:"Hip thrust",kind:"main",w:90,step:5,cap:150,s:[2,2,2,2,2,3,3],m:{"tylna taśma":1},alt:"Mostek z hantlem"},
+    {n:"Prostowanie nóg siedząc (środkowy zakres)",kind:"iso",w:30,step:2.5,cap:60,s:[2,2,2,2,3,4,3],m:{"czworogłowe":1},alt:"Leg press w wygodnym zakresie",cue:"Zakres ruchu w ćwiczeniach na uda zaczynasz w komfortowym środku i poszerzasz go małym krokiem dopiero po 2 sesjach z oceną 0–3 w skali samopoczucia. Opuszczanie 3 s."},
+    {n:"Uginanie ud siedząc",kind:"iso",w:60,step:2.5,cap:95,s:[2,2,2,2,2,2,2],m:{"tylna taśma":1},alt:"Uginanie ud leżąc"},
+    {n:"Wspięcia na palce siedząc",kind:"iso",w:30,step:2.5,cap:60,r:"8–15",s:[2,2,3,3,4,5,4],m:{"łydki":1},alt:"Wspięcia stojąc",cue:"Pełny zakres, pauza 2 s w rozciągnięciu na dole, kontrolowane opuszczanie. Zakres 8–15 powtórzeń."},
+    {n:"Prostowanie ramion na wyciągu (lina)",kind:"iso",w:22.5,step:2.5,cap:35,s:[0,2,2,2,2,3,3],m:{"triceps":1},alt:"Wyciskanie francuskie leżąc / prostowanie z hantlem nad głową"},
+    {n:"Face pull (łopatki w dół i w tył)",kind:"iso",w:7.5,step:1.25,cap:15,r:"12–15",s:[0,2,2,2,2,2,2],m:{"bark tylny":1},alt:"Odwrotne rozpiętki",cue:"Lina na wysokości oczu, lekki ciężar, na końcu rotacja zewnętrzna dłoni."},
+    {n:"Odwrotne brzuszki (podwijanie miednicy)",kind:"iso",bw:true,r:"10–15",s:[2,2,2,2,3,4,3],m:{"brzuch":1},alt:"Unoszenie nóg zgiętych w zwisie",cue:"Podnosisz miednicę, nie zamach nogami, wolne opuszczanie 3 s. Progresja: wolniejsze tempo, potem hantel między stopami."}
   ],
   UB: [
-    {n:"Wyciskanie sztangi leżąc", kind:"main", w:85, step:2.5, cap:105, capTo21:100, hard:true, s:[2,3,3,3,3,3], m:{klatka:1,triceps:.5,"bark przedni":.5}, ss:"A1", alt:"Wyciskanie na maszynie poziomej"},
-    {n:"Wiosłowanie jednorącz na maszynie", kind:"main", w:85, step:5, cap:115, s:[2,3,3,3,3,3], m:{plecy:1,biceps:.5,"bark tylny":.5}, ss:"A2", alt:"Wiosło hantlem z podparciem klatki"},
-    {n:"Wyciskanie hantli siedząc z oparciem", kind:"main", w:20, step:1, cap:26, s:[2,2,2,3,3,2], m:{"bark przedni":1,"bark boczny":.5,triceps:.5}, ss:"B1", alt:"Wyciskanie na maszynie barkowej (chwyt półneutralny) albo landmine press"},
-    {n:"Ściąganie wyciągu prostymi ramionami", kind:"iso", w:22.5, step:2.5, cap:35, s:[2,2,2,3,3,3], m:{plecy:1}, ss:"B2", alt:"Ściąganie wąskim chwytem"},
-    {n:"Rozpiętki na maszynie lub wyciągu", kind:"iso", w:20, step:2.5, cap:35, s:[2,2,2,2,2,2], m:{klatka:1}, ss:"C1", alt:"Krzyżowanie wyciągów"},
-    {n:"Wznosy bokiem hantlami", kind:"iso", w:9, step:1, cap:14, s:[2,3,3,3,3,4], m:{"bark boczny":1}, ss:"C2", alt:"Wznosy na maszynie"},
-    {n:"Prostowanie na wyciągu + uginanie młotkowe", kind:"iso", w:22.5, step:2.5, cap:35, s:[2,2,3,3,3,3], m:{triceps:1,biceps:1}, alt:"Wyciskanie francuskie / uginanie na ławce skośnej"}
+    {n:"Wyciskanie sztangi leżąc",kind:"main",w:85,step:2.5,cap:105,capTo21:100,hard:true,s:[2,2,2,3,3,3,2],m:{"klatka":1,"triceps":0.5,"bark przedni":0.5},pp:"push",alt:"Wyciskanie na maszynie poziomej"},
+    {n:"Wiosłowanie jednorącz na maszynie",kind:"main",w:85,step:5,cap:115,s:[2,3,3,3,3,3,3],m:{"plecy":1,"biceps":0.5,"bark tylny":0.5},pp:"pull",alt:"Wiosło hantlem z podparciem klatki"},
+    {n:"Wyciskanie hantli siedząc z oparciem",kind:"main",w:20,step:1,cap:26,s:[2,2,2,2,2,2,2],m:{"bark przedni":1,"bark boczny":0.5,"triceps":0.5},pp:"push",alt:"Wyciskanie na maszynie barkowej (chwyt półneutralny) albo landmine press",cue:"Stały, umiarkowany ciężar, oparcie lekko odchylone, bez zwiększania obciążenia."},
+    {n:"Ściąganie wąskim chwytem neutralnym",kind:"main",w:50,step:2.5,cap:80,s:[2,2,3,3,4,4,4],m:{"plecy":1,"biceps":0.5},pp:"pull",alt:"Ściąganie drążka nachwytem albo podciąganie neutralne z pomocą",cue:"Chwyt neutralny, łokcie blisko tułowia, pełne rozciągnięcie w górze i ściągnięcie łopatek w dół."},
+    {n:"Ściąganie wyciągu prostymi ramionami",kind:"iso",w:22.5,step:2.5,cap:35,s:[2,2,2,3,3,3,3],m:{"plecy":1},pp:"pull",alt:"Ściąganie wąskim chwytem"},
+    {n:"Rozpiętki na maszynie lub wyciągu",kind:"iso",w:20,step:2.5,cap:35,s:[0,2,2,2,3,3,2],m:{"klatka":1},pp:"push",alt:"Krzyżowanie wyciągów",cue:"Pełne rozciągnięcie klatki w zakresie komfortowym dla barku, 1 s pauzy, powrót kontrolowany."},
+    {n:"Wznosy bokiem hantlami",kind:"iso",w:9,step:1,cap:14,s:[3,3,3,4,4,5,5],m:{"bark boczny":1},alt:"Wznosy na maszynie"},
+    {n:"Odwrotne rozpiętki na maszynie lub wyciągu",kind:"iso",w:7.5,step:1.25,cap:12.5,s:[2,2,2,2,3,3,3],m:{"bark tylny":1},pp:"pull",alt:"Odwrotne rozpiętki z hantlami na ławce skośnej"},
+    {n:"Uginanie na wyciągu zza ciała (bayesian)",kind:"iso",s:[0,0,2,2,2,2,2],m:{"biceps":1},ss:"E1",alt:"Uginanie hantli na ławce skośnej",cue:"Wyciąg nisko za plecami, łokieć za linią tułowia, rozciągnięcie bicepsa w dolnym punkcie. Pierwsze w superserii z tricepsem."},
+    {n:"Prostowanie ramion zza głowy na wyciągu (leżąc na ławce)",kind:"iso",w:12.5,step:1.25,cap:22.5,s:[2,2,2,3,3,3,3],m:{"triceps":1},ss:"E2",alt:"Wyciskanie francuskie leżąc ze sztangą łamaną (start ok. 30 kg)",cue:"Łokcie przy głowie, pełne rozciągnięcie głowy długiej tricepsa, opuszczanie 2–3 s."},
+    {n:"Unoszenie nóg zgiętych w zwisie",kind:"iso",bw:true,r:"10–15",s:[0,0,2,2,2,2,2],m:{"brzuch":1},alt:"Odwrotne brzuszki na ławce skośnej",cue:"Bez bujania, podwijasz miednicę i unosisz zgięte nogi do wysokości bioder lub wyżej. Po 15 powtórzeniach w serii dociążasz (hantel między stopami) albo prostujesz nogi."}
   ],
   LB: [
-    {n:"Przysiad do wygodnej wysokości", kind:"main", w:40, step:2.5, cap:70, s:[2,3,3,3,3,3], m:{"czworogłowe":1,"tylna taśma":.5}, alt:"Box squat, goblet do skrzyni albo hack"},
-    {n:"Odwrotny wypad (krótki krok, tułów prosto)", kind:"iso", w:10, step:2, cap:20, s:[2,2,2,2,2,2], m:{"czworogłowe":1,"tylna taśma":.5}, alt:"Niski step-up do wygodnej wysokości"},
-    {n:"Prostowanie nóg siedząc (środkowy zakres)", kind:"iso", w:35, step:2.5, cap:55, s:[2,2,2,2,2,2], m:{"czworogłowe":1}, ss:"E1", alt:"Leg press w wygodnym zakresie"},
-    {n:"Wspięcia stojąc", kind:"iso", w:50, step:5, cap:100, s:[2,2,2,3,3,3], m:{"łydki":1}, ss:"E2", alt:"Wspięcia siedząc"},
-    {n:"Wznosy bokiem na wyciągu", kind:"iso", w:6.25, step:1.25, cap:12.5, s:[0,0,2,2,3,3], m:{"bark boczny":1}, ss:"F1", alt:"Wznosy hantlami stojąc"},
-    {n:"Prostowanie tułowia na ławce 45°", kind:"iso", bw:true, s:[2,2,2,2,2,2], m:{"tylna taśma":1}, ss:"F2", alt:"Hip thrust lżejszy"}
+    {n:"Hack squat (kontrolowana głębokość)",kind:"main",w:50,step:5,cap:100,s:[3,3,3,3,3,4,3],m:{"czworogłowe":1,"tylna taśma":0.5},alt:"Leg press w wygodnym zakresie albo Smith machine do wygodnej wysokości",cue:"Zakres ruchu w ćwiczeniach na uda zaczynasz w komfortowym środku i poszerzasz go małym krokiem dopiero po 2 sesjach z oceną 0–3 w skali samopoczucia. Stopy na platformie wg komfortu, opuszczanie 3 s."},
+    {n:"Prostowanie nóg siedząc (środkowy zakres)",kind:"iso",w:30,step:2.5,cap:60,s:[0,2,2,3,3,3,3],m:{"czworogłowe":1},alt:"Leg press w wygodnym zakresie",cue:"Zakres ruchu w ćwiczeniach na uda zaczynasz w komfortowym środku i poszerzasz go małym krokiem dopiero po 2 sesjach z oceną 0–3 w skali samopoczucia. Opuszczanie 3 s."},
+    {n:"Prostowanie tułowia na ławce 45°",kind:"iso",bw:true,s:[0,2,2,2,2,2,2],m:{"tylna taśma":1},alt:"Hip thrust lżejszy"},
+    {n:"Wspięcia stojąc",kind:"iso",w:70,step:5,cap:110,r:"8–15",s:[2,3,3,4,5,5,4],m:{"łydki":1},alt:"Wspięcia na suwnicy albo na stopniu ze sztangą",cue:"Pełny zakres, pauza 2 s w rozciągnięciu na dole, kontrolowane opuszczanie, bez odbijania. Zakres 8–15 powtórzeń."},
+    {n:"Wznosy bokiem na wyciągu",kind:"iso",w:6.25,step:1.25,cap:12.5,s:[0,2,3,4,4,5,5],m:{"bark boczny":1},alt:"Wznosy hantlami stojąc"},
+    {n:"Uginanie młotkowe hantlami (chwyt neutralny)",kind:"iso",w:14,step:1,cap:22,s:[2,2,2,3,3,3,3],m:{"biceps":1},alt:"Uginanie młotkowe na wyciągu z liną"},
+    {n:"Allahy na wyciągu (stojąc)",kind:"iso",w:32.5,step:2.5,cap:55,r:"10–15",s:[2,2,2,3,3,4,3],m:{"brzuch":1},alt:"Brzuszki na maszynie brzusznej",cue:"Biodra stabilnie, zwijasz tułów, wydech przy skurczu, powrót 2 s."}
   ]
 };
 
 const CORE = {
-  UA: [
-    {n:"Dead bug (żebra w dół, lędźwie na macie)", bw:true, r:"6–8/str", s:2, m:{"tułów":1}, alt:"Bird dog"},
-    {n:"Face pull (łopatki w dół i w tył)", w:8, step:1.25, cap:20, r:"12–15", s:2, m:{"bark tylny":1}, alt:"Odwrotne rozpiętki"}
-  ],
+  UA: [],
   LA: [
-    {n:"Pallof press", w:10, step:1.25, cap:18, r:"8–10/str", s:2, m:{"tułów":1}, alt:"Martwy błąd / dead bug"},
-    {n:"Dead bug (żebra w dół)", bw:true, r:"6–8/str", s:2, m:{"tułów":1}, alt:"Bird dog"}
+    {n:"Pallof press",w:10,step:1.25,cap:18,r:"8–10/str",s:2,m:{"stabilizacja":1},alt:"Martwy błąd / dead bug"}
   ],
   UB: [
-    {n:"Face pull (łopatki w dół i w tył)", w:8, step:1.25, cap:20, r:"12–15", s:2, m:{"bark tylny":1}, alt:"Odwrotne rozpiętki"},
-    {n:"Dead bug (żebra w dół)", bw:true, r:"6–8/str", s:2, m:{"tułów":1}, alt:"Bird dog"}
+    {n:"Dead bug (żebra w dół)",bw:true,r:"6–8/str",s:2,m:{"stabilizacja":1},alt:"Bird dog"}
   ],
-  LB: [
-    {n:"Pallof press", w:10, step:1.25, cap:18, r:"8–10/str", s:2, m:{"tułów":1}, alt:"Dead bug"},
-    {n:"Deska bokiem (łatwiejszy wariant)", bw:true, r:"20–30 s/str", s:2, m:{"tułów":1}, alt:"Pallof jednorącz"}
-  ]
+  LB: []
 };
-const GROUPS = ["klatka","plecy","bark boczny","bark przedni","bark tylny","biceps","triceps","czworogłowe","tylna taśma","łydki","tułów"];
-const GROUP_NOTE = {"bark boczny":"priorytet","plecy":"priorytet"};
+
+const GROUPS = ["klatka","plecy","bark boczny","bark przedni","bark tylny","biceps","triceps","czworogłowe","tylna taśma","łydki","brzuch","stabilizacja"];
+const GROUP_NOTE = {"plecy":"priorytet","bark boczny":"priorytet","bark tylny":"priorytet","biceps":"priorytet","triceps":"priorytet","czworogłowe":"priorytet","łydki":"priorytet","brzuch":"priorytet"};
 
 function esc(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m]))}
 function imgFor(name){
@@ -490,7 +497,9 @@ function imgFor(name){
   if(/kardio|wejście/.test(n)) return "run.jpg";
   if(/mobiliz|zakończ/.test(n)) return "stretch.jpg";
   if(/serie wejściowe|trening właściwy/.test(n)) return "plates.jpg";
-  if(/przysiad/.test(n)) return "rack.jpg";
+  if(/przysiad|hack squat/.test(n)) return "rack.jpg";
+  if(/odwrotne rozpiętk|zza głowy|prostowanie ramion|bayesian|allahy|ściąganie wąskim/.test(n)) return "cable.jpg";
+  if(/unoszenie nóg|odwrotne brzuszki/.test(n)) return "plank.jpg";
   if(/skos|rozpiętk|wyciskanie sztangi leż|maszynie poziomej/.test(n)) return "db-press.jpg";
   if(/ściąganie drążka|podciąg/.test(n)) return "pullup.jpg";
   if(/dipy|pompki/.test(n)) return "push.jpg";
@@ -515,7 +524,7 @@ function blockOf(w){return BLOCKS.find(b=>w>=b.weeks[0]&&w<=b.weeks[1])}
 function phaseOf(w){return PHASES.find(p=>w>=p.weeks[0]&&w<=p.weeks[1])}
 function isDeload(w){return DELOADS.includes(w)}
 function isControl(w){return w===6}
-function levelOf(w){return w<=2?0:w<=4?1:w<=8?2:w<=14?3:w<=21?4:5}
+function levelOf(w){return w<=2?0:w<=4?1:w<=6?2:w<=10?3:w<=14?4:w<=21?5:6}
 function prevLoadWeek(w){let p=w-1; while(p>1&&isDeload(p)) p--; return Math.max(1,p)}
 function rirOf(w){
   if(isDeload(w)) return w===28 ? "RIR 4 · tydzień lżejszy i pomiary" : "RIR 4 · tydzień lżejszy (deload): mniej serii, ciężar −10%";
@@ -596,12 +605,24 @@ function weekVolume(week){
 function daySets(dayId, week){
   return {lifts:EX[dayId].reduce((s,ex)=>s+setsFor(ex,week),0), core:CORE[dayId].reduce((s,ex)=>s+setsForCore(week,ex),0)};
 }
-/* orientacyjny czas sesji w minutach (model: wejście ≈12, serie w superserii ≈2,2, proste główne ≈3, proste izolacje ≈2,3, brzuch ≈1,5, zakończenie ≈4) */
+/* orientacyjny czas sesji w minutach (model: wejście dni górnych ≈17, dolnych ≈13; główne ≈3,2 min na serię z przerwą 2–3 min, izolacje i superserie ≈2,4, stabilizacja ≈1,5; zakończenie ≈4). To szacunek, nie limit. */
+function blockTimeRange(id){
+  const b=BLOCKS.find(x=>x.id===id); let lo=1e9, hi=0;
+  for(let w=b.weeks[0]; w<=b.weeks[1]; w++){ if(isDeload(w)) continue; DAYS.forEach(d=>{const m=dayMinutes(d.id,w); lo=Math.min(lo,m); hi=Math.max(hi,m)}); }
+  return `${lo}–${hi} min`;
+}
+function entryMinutes(dayId){return isLowerDay(dayId)?13:17}
 function dayMinutes(dayId, week){
-  let m=12+4;
-  EX[dayId].forEach(ex=>{const s=setsFor(ex,week); m+=s*(ex.ss?2.2:(ex.kind==="main"?3:2.3))});
+  let m=entryMinutes(dayId)+4;
+  EX[dayId].forEach(ex=>{const s=setsFor(ex,week); m+=s*(ex.kind==="main"?3.2:2.4)});
   CORE[dayId].forEach(ex=>{m+=setsForCore(week,ex)*1.5});
   return Math.round(m/5)*5;
+}
+/* stosunek serii ciągnących do pchających w dniu górnym (pp:"pull"/"push") */
+function pullPush(dayId, week){
+  let pull=0, push=0;
+  EX[dayId].forEach(ex=>{const x=setsFor(ex,week); if(ex.pp==="pull") pull+=x; else if(ex.pp==="push") push+=x});
+  return {pull, push, ratio: push?pull/push:null};
 }
 
 async function sha256(text){
@@ -629,15 +650,15 @@ function sessionOpen(dayId){
   if(lower){
     return `${exHead("1. Wejście · kardio","5 min")}
       <div class="alt">Rower stacjonarny albo orbitrek, łatwy oddech, bez zadyszki. Cel: ciepło w nogach i biodrach, nie trening wytrzymałości.</div></div></div>
-      ${exHead("2. Mobilizacja","4 min")}
+      ${exHead("2. Mobilizacja","ok. 5 min")}
       <div class="alt">Krążenia bioder w obie strony. Rotacje bioder w leżeniu na plecach z wyprostowanymi nogami, bez dociskania. Marsz boczny z taśmą, 2 × 8 kroków. Krótki wykrok stojąc z podparciem ręką, tylna noga prosta, miednica lekko podwinięta, tylko do pierwszego napięcia z przodu biodra. Mostek biodrowy w leżeniu 1 × 10 ze zatrzymaniem na górze. Zakres kończysz przed pojawieniem się dyskomfortu.</div></div></div>
       ${exHead("3. Serie wejściowe","ok. 3 min")}
       <div class="alt">Dwie lekkie serie pierwszego ćwiczenia dnia (ok. 50% i 70% ciężaru roboczego), pełna kontrola zakresu. Potem zaczynasz serie zapisane poniżej.</div></div></div>`;
   }
   return `${exHead("1. Wejście · kardio","5 min")}
       <div class="alt">Rower, orbitrek albo lekki ergometr. Łatwy oddech. Rozgrzewasz barki i tułów, nie robisz osobnego treningu cardio.</div></div></div>
-      ${exHead("2. Mobilizacja","4 min")}
-      <div class="alt">Krążenia ramion i łopatek. Band pull-apart albo face pull bez obciążenia 2 × 15. Otwieranie klatki o ławkę albo ścianę, barki w dół i w tył. Zakres bez dyskomfortu.</div></div></div>
+      ${exHead("2. Mobilizacja i postawa","ok. 8 min")}
+      <div class="alt">1) Wyprost odcinka piersiowego na wałku (foam roller) pod łopatkami: 2 × 8 powolnych wydechów w wyproście. 2) Rotacje odcinka piersiowego w leżeniu bokiem 2 × 8 na stronę (klęk podparty tylko wtedy, gdy jest komfortowy). 3) Rozciąganie klatki o futrynę 2 × 30 s na stronę, bez dociskania na siłę. 4) Wall slides przy ścianie 2 × 10. 5) Wznosy Y leżąc przodem albo band pull-apart 2 × 12. Zakres tylko do komfortu.</div></div></div>
       ${exHead("3. Serie wejściowe","ok. 3 min")}
       <div class="alt">Dwie lekkie serie pierwszego wyciskania (ok. 50% i 70% ciężaru roboczego). Potem serie zapisane poniżej.</div></div></div>`;
 }
@@ -646,10 +667,10 @@ function sessionClose(dayId, week){
   const lower = isLowerDay(dayId);
   const extra = lower
     ? "Na końcu 1 min bardzo lekkiego krążenia bioder, bez rozciągania tyłu uda na siłę."
-    : "Na końcu 1 min band pull-apart albo otwarcia klatki, barki luźno.";
+    : "Na końcu 1 min otwierania klatki w futrynie albo wyprostu piersiowego na wałku, barki luźno.";
   const t = dayMinutes(dayId, week);
   return `${exHead("6. Zakończenie","3–4 min")}
-      <div class="alt">Spokojny rower albo marsz, aż oddech wróci. ${extra} Zapisz serie w aplikacji, napij się wody i wyjdź. Szacunek tego dnia w tym tygodniu: ok. ${t} min (wejście ok. 12 min, serie, brzuch i postawa, zakończenie). Jeśli sesja zbliża się do 75 minut, pomiń ostatnią izolację zamiast skracać przerwy.</div></div></div>`;
+      <div class="alt">Spokojny rower albo marsz, aż oddech wróci. ${extra} Zapisz serie w aplikacji, napij się wody i wyjdź. Szacunek tego dnia w tym tygodniu: ok. ${t} min (wejście ok. ${entryMinutes(dayId)} min, serie, stabilizacja, zakończenie). Czas nie jest celem: nie skracasz przerw ani serii pod zegar, a cały plan jest policzony na pełne przerwy.</div></div></div>`;
 }
 
 function renderWorkouts(week){
@@ -665,6 +686,7 @@ function renderWorkouts(week){
       return `${exHead(ex.n, esc(fmtKg(kg)))}
         <div class="chips"><span class="chip">${sets} × ${esc(repsFor(ex, week, day.id))}</span><span class="chip">${esc(rirOf(week).split("·")[0].trim())}</span>${tempo}${ssChip}</div>
         ${partner?`<div class="alt">Na zmianę z: ${esc(partner.n.replace(/\s*\(.*$/,""))}. Przerwa dopiero po obu ćwiczeniach.</div>`:""}
+        ${ex.cue?`<div class="alt">Wykonanie: ${esc(ex.cue)}</div>`:""}
         <div class="alt">Zamiennik: ${esc(ex.alt)}</div>
         ${exLinks(ex.n)}
       </div></div>`;
@@ -673,7 +695,7 @@ function renderWorkouts(week){
       const kg = loadFor(ex, week);
       const sets = setsForCore(week, ex);
       return `${exHead(ex.n, esc(fmtKg(kg)))}
-        <div class="chips"><span class="chip">${sets} × ${esc(ex.r)}</span><span class="chip">brzuch i postawa</span></div>
+        <div class="chips"><span class="chip">${sets} × ${esc(ex.r)}</span><span class="chip">stabilizacja</span></div>
         <div class="alt">Zamiennik: ${esc(ex.alt)}</div>
         ${exLinks(ex.n)}
       </div></div>`;
@@ -681,8 +703,8 @@ function renderWorkouts(week){
     const ds=daySets(day.id, week);
     const list = sessionOpen(day.id)
       + `${exHead("4. Trening właściwy", `${ds.lifts} serii`)}${dl?`<div class="alt">Tydzień lżejszy: mniej serii, ciężar ok. −10%, RIR 4.</div>`:""}</div></div>` + lifts
-      + `${exHead("5. Brzuch i postawa", `${ds.core} serie`)}
-        <div class="alt">Krótko i spokojnie. Pilnujesz pozycji żeber i łopatek, oddychasz płynnie, bez wstrzymywania oddechu.</div></div></div>` + core;
+      + (ds.core?`${exHead("5. Stabilizacja", `${ds.core} serie`)}
+        <div class="alt">Krótko i spokojnie. Pilnujesz pozycji żeber i łopatek, oddychasz płynnie, bez wstrzymywania oddechu.</div></div></div>` + core:"");
     return `<article class="card"><div class="card-head"><h3>${esc(day.label)} · ${esc(day.name)}</h3><button type="button" class="btn btn-primary btn-inline" data-start-day="${day.id}">Zacznij trening</button></div>${list}${sessionClose(day.id, week)}</article>`;
   }).join("");
 }
@@ -694,10 +716,12 @@ function volumeCard(week){
     const delta = week===1 ? "" : (d>0?` <span class="status-warn">+${String(d).replace(".",",")}</span>`:d<0?` <span class="muted">${String(d).replace(".",",")}</span>`:"");
     return `<tr><td>${esc(g)}${GROUP_NOTE[g]?` <span class="badge plan">${GROUP_NOTE[g]}</span>`:""}</td><td class="num">${String(x).replace(".",",")}${delta}</td></tr>`;
   }).join("");
+  const pp=["UA","UB"].map(d=>{const x=pullPush(d,week); const r=x.ratio; return `<tr><td>${esc(dayOf(d).name)}</td><td class="num">${x.pull} : ${x.push}${r?` <span class="muted">(${r.toFixed(1).replace(".",",")} : 1)</span>`:""}</td></tr>`}).join("");
   return `<div class="card"><h2>Serie na partię · tydzień ${week}</h2>
-    <p class="muted">Seria bezpośrednia liczy się 1, pośrednia 0,5 (np. triceps w wyciskaniu). Zmiana pokazana względem poprzedniego tygodnia roboczego. Reguła: wzrost najwyżej o 2 serie na partię naraz.</p>
+    <p class="muted">Seria bezpośrednia liczy się 1, pośrednia 0,5 (np. triceps w wyciskaniu). Zmiana pokazana względem poprzedniego tygodnia roboczego. Reguła: wzrost najwyżej o 3 serie na partię na jeden poziom objętości (tygodnie 1–2, 3–4, 5–6, 7–10, 11 i 13–14, 15–21, 22–27).</p>
     <div class="table-wrap"><table class="kv"><thead><tr><th>Partia</th><th class="num">Serie / tydz.</th></tr></thead><tbody>${rows}</tbody></table></div>
-    <p class="muted">Podział to decyzja o priorytecie (szerokie plecy i boczne barki), a nie wynik badań o optymalnej objętości każdej partii.</p></div>`;
+    <div class="table-wrap"><table class="kv"><thead><tr><th>Ciągnięcie : pchanie</th><th class="num">Serie</th></tr></thead><tbody>${pp}</tbody></table></div>
+    <p class="muted">Podział to decyzja o priorytecie (górna część pleców i postawa, tylne i boczne barki, ramiona, łydki, brzuch, uda), a nie wynik badań o optymalnej objętości każdej partii. W dniach górnych cel to co najmniej 1,5 serii ciągnących na 1 pchającą.</p></div>`;
 }
 
 function renderWeek(week){
@@ -715,7 +739,7 @@ function renderWeek(week){
     </div>
     <div class="card">
       <p class="muted">${esc(b.note)}</p>
-      <p class="muted">Sobota Upper A, niedziela Lower A, wtorek Upper B, czwartek Lower B. Każda wizyta: kardio 5 min → mobilizacja 4 min → serie wejściowe → trening w superseriach → zakończenie. Poniedziałek, środa i piątek: spacer 25–40 min. Cel czasu jednej wizyty: 60–75 minut.</p>
+      <p class="muted">Sobota Upper A, niedziela Lower A, wtorek Upper B, czwartek Lower B. Każda wizyta: kardio 5 min → mobilizacja → serie wejściowe → trening (ramiona w superseriach) → zakończenie. Poniedziałek, środa i piątek: spacer 25–40 min. Czas wizyty nie jest limitem: przerwy zostają pełne, a szacunek czasu danego dnia zobaczysz na jego końcu.</p>
     </div>
     <div class="weekbar" id="weekbar-t"></div>
     ${renderWorkouts(week)}`;
@@ -740,13 +764,19 @@ function renderPlan(week){
     ${volumeCard(week)}
     ${strategyCard(week)}
     <div class="card">
-      <h2>Przebieg wizyty (60–75 min)</h2>
+      <h2>Przebieg wizyty</h2>
       <p>1. Kardio wejściowe 5 min — rower albo orbitrek, łatwy oddech.</p>
-      <p>2. Mobilizacja 4 min — nogi i biodra w dniach dolnych, klatka i łopatki w dniach górnych. Zakres tylko do komfortu.</p>
+      <p>2. Mobilizacja — w dniach górnych ok. 8 min (odcinek piersiowy, klatka, łopatki), w dniach dolnych ok. 5 min (biodra i nogi). Zakres tylko do komfortu.</p>
       <p>3. Serie wejściowe ok. 3 min — dwie lekkie serie pierwszego ćwiczenia.</p>
-      <p>4. Trening właściwy 40–50 min — główne ruchy z przerwą 90–120 s, izolacje 60–90 s, część ćwiczeń w superseriach (naprzemiennie, przerwa po obu).</p>
-      <p>5. Brzuch i postawa ok. 6 min — dwa krótkie ćwiczenia.</p>
-      <p>6. Zakończenie 3–4 min — spokojny marsz i zapis serii. Szacunki czasu to model, sprawdź je w pierwszych dwóch tygodniach każdego bloku.</p>
+      <p>4. Trening właściwy — główne ruchy z przerwą 2–3 min, izolacje 60–90 s, brzuch 60–90 s, ramiona w superseriach (naprzemiennie, przerwa po obu).</p>
+      <p>5. Stabilizacja ok. 3 min w dniach Upper B i Lower A — dwa krótkie ćwiczenia po 2 serie.</p>
+      <p>6. Zakończenie 3–4 min — spokojny marsz i zapis serii.</p>
+      <p>Czas nie jest ograniczeniem. Szacunek modelu (wejście, serie z pełnymi przerwami, zakończenie): blok A ok. ${blockTimeRange("A")}, blok B ok. ${blockTimeRange("B")}, blok C ok. ${blockTimeRange("C")}, blok D ok. ${blockTimeRange("D")} na wizytę. Najdłuższe są dni górne w bloku C. Gdy jakość serii spada, zakończ na bieżącym ćwiczeniu zamiast skracać przerwy, a dane z pierwszych tygodni każdego bloku skoryguj do swojego tempa.</p>
+    </div>
+    <div class="card">
+      <h2>Postawa: jak program ją wspiera</h2>
+      <p>Program ma cel postawowy: mocniejsza górna część pleców i tylne barki, lepsza ruchomość odcinka piersiowego oraz więcej ciągnięcia niż pchania. W dniach górnych stosunek serii ciągnących do pchających wynosi co najmniej 1,5 : 1 (wartość dla wybranego tygodnia widać w tabeli wyżej).</p>
+      <p>Co robisz poza ćwiczeniami z listy: przy pracy siedzącej co 45–60 min wstań na 1–2 min, ustaw ekran na wysokość oczu, a 3–5 min mobilizacji odcinka piersiowego możesz zrobić także w dni bez treningu siłowego. Jakość ruchu jest ważniejsza niż ciężar: łopatki w dół i do siebie, żebra nad miednicą, pełny zakres w komfortowych granicach.</p>
     </div>
     <div class="card">
       <h2>Jak dokładać ciężar (podwójna progresja)</h2>
@@ -1018,9 +1048,9 @@ const ALIASES = {
   "Wiosłowanie jednorącz na maszynie":["Wiosłowanie dolne jednorącz (maszyna)","Iso-Lateral Low Row","Iso-Lateral Row (Machine)"],
   "Wyciskanie hantli siedząc z oparciem":["Seated Shoulder Press (Dumbbell)","Shoulder Press (Dumbbell)"],
   "Ściąganie wyciągu prostymi ramionami":["Straight Arm Lat Pulldown (Cable)","Straight Arm Pulldown"],
-  "Rozpiętki na maszynie lub wyciągu":["Chest Fly (Machine)","Cable Fly Crossovers","Incline Cable Fly","Butterfly (Pec Deck)"],
+  "Rozpiętki na maszynie lub wyciągu":["Chest Fly (Machine)","Cable Fly Crossovers","Butterfly (Pec Deck)"],
   "Wznosy bokiem hantlami":["Lateral Raise (Dumbbell)","Wznosy bokiem (hantle)"],
-  "Prostowanie na wyciągu + uginanie młotkowe":["Triceps Pushdown","Triceps Rope Pushdown","Prostowanie ramion na wyciągu górnym (pushdown)","Prostowanie ramion na wyciągu górnym z liną"],
+  "Prostowanie ramion na wyciągu (lina)":["Prostowanie na wyciągu + uginanie młotkowe","Triceps Pushdown","Triceps Rope Pushdown","Prostowanie ramion na wyciągu górnym (pushdown)","Prostowanie ramion na wyciągu górnym z liną"],
   "Przysiad do wygodnej wysokości":["Box Squat (Barbell)"],
   "Odwrotny wypad (krótki krok, tułów prosto)":["Reverse Lunge (Dumbbell)","Reverse Lunge"],
   "Prostowanie nóg siedząc (środkowy zakres)":["Leg Extension (Machine)","Prostowanie nóg (maszyna)"],
@@ -1032,7 +1062,18 @@ const ALIASES = {
   "Face pull (łopatki w dół i w tył)":["Face Pull","Face pull (wyciąg)"],
   "Pallof press":["Pallof Press"],
   "Deska bokiem (łatwiejszy wariant)":["Side Plank"],
-  "Spacer farmerski, tułów wysoki":["Farmer's Walk","Farmers Walk"]
+  "Spacer farmerski, tułów wysoki":["Farmer's Walk","Farmers Walk"],
+  "Rozpiętki na ławce skośnej na wyciągu":["Incline Cable Fly","Incline Cable Flye","Rozpiętki na wyciągu na ławce skośnej"],
+  "Odwrotne rozpiętki na maszynie lub wyciągu":["Rear Delt Reverse Fly (Cable)","Rear Delt Reverse Fly (Dumbbell)","Reverse Fly (Machine)","Reverse Machine Fly","Odwrotne rozpiętki na wyciągu"],
+  "Uginanie hantli na ławce skośnej":["Seated Incline Curl (Dumbbell)","Incline Dumbbell Curl","Incline Curl (Dumbbell)"],
+  "Prostowanie ramion zza głowy na wyciągu (leżąc na ławce)":["Triceps Extension (Cable)","Overhead Triceps Extension (Cable)","Cable Overhead Triceps Extension","Lying Triceps Extension (Cable)"],
+  "Allahy na wyciągu (stojąc)":["Cable Crunch","Allahy","Brzuszki na wyciągu"],
+  "Ściąganie wąskim chwytem neutralnym":["Lat Pulldown - Close Grip (Cable)","Close Grip Lat Pulldown","Close-Grip Lat Pulldown (Cable)"],
+  "Uginanie na wyciągu zza ciała (bayesian)":["Bayesian Curl (Cable)","Bayesian Cable Curl","Bicep Curl (Cable)"],
+  "Unoszenie nóg zgiętych w zwisie":["Hanging Leg Raise","Hanging Knee Raise","Unoszenie nóg w zwisie"],
+  "Uginanie młotkowe hantlami (chwyt neutralny)":["Hammer Curl (Dumbbell)","Hammer Curl","Uginanie młotkowe"],
+  "Odwrotne brzuszki (podwijanie miednicy)":["Reverse Crunch"],
+  "Hack squat (kontrolowana głębokość)":["Hack Squat (Machine)","Hack Squat","Przysiad hakowy"]
 };
 function planExNames(){
   const set=[];
@@ -1395,6 +1436,7 @@ function exerciseHtml(it,xi){
   return `<section class="ses-ex" data-x="${xi}" aria-label="${esc(it.n)}">
     <div class="ses-head"><h3>${esc(it.n)}</h3>${PLAN_DBID[it.n]?`<button type="button" class="btn btn-ghost" data-ex-open="${esc(PLAN_DBID[it.n])}" aria-label="Technika i zdjęcia: ${esc(it.n)}">Technika</button>`:""}</div>
     <div class="ses-meta"><span class="chip">cel ${it.sets} × ${esc(it.repsTxt)}</span>${it.rirTxt?`<span class="chip">RIR ${esc(it.rirTxt)}</span>`:""}${it.ss?`<span class="chip">superseria ${esc(it.ss)} · z: ${esc(String(it.ssWith).replace(/\s*\(.*$/,""))}</span>`:""}${it.planKg!=null?`<span class="chip">${it.sugNote?"propozycja":"start orient."}: ${esc(fmtNum(it.planKg))} kg</span>`:`<span class="chip">ciężar wg RIR</span>`}<span class="chip">przerwa ${esc(mmss(restFor(it,"n")))}</span></div>
+    ${it.ex&&it.ex.cue?`<p class="ses-last">${esc(it.ex.cue)}</p>`:""}
     <p class="ses-last">${lastTxt}${it.sugNote?` · ${esc(it.sugNote)}`:""}</p>
     <div class="srow head" aria-hidden="true"><span>Seria</span><span>Poprzednio</span><span>kg</span><span>${it.unit==="s"?"sek.":"Powt."}</span><span>RIR</span><span></span></div>
     ${rows}
@@ -1780,7 +1822,7 @@ function wireSettings(){
 
 
 /* ===== baza ćwiczeń (Free Exercise DB, Unlicense) ===== */
-const PLAN_DBID = {"Wyciskanie hantli na skosie": "Incline_Dumbbell_Press", "Ściąganie drążka nachwytem (szerokie)": "Wide-Grip_Lat_Pulldown", "Wyciskanie na maszynie poziomej (siedząc)": "Leverage_Chest_Press", "Wiosłowanie z podparciem klatki": "Dumbbell_Incline_Row", "Wznosy bokiem na wyciągu": "Standing_Low-Pulley_Deltoid_Raise", "Uginanie ze sztangą łamaną": "EZ-Bar_Curl", "Hip thrust": "Barbell_Hip_Thrust", "RDL z kontrolowanym zakresem": "Romanian_Deadlift", "Leg press (kontrolowana głębokość)": "Leg_Press", "Uginanie ud siedząc": "Seated_Leg_Curl", "Wspięcia na palce siedząc": "Seated_Calf_Raise", "Wyciskanie sztangi leżąc": "Barbell_Bench_Press_-_Medium_Grip", "Wiosłowanie jednorącz na maszynie": "Leverage_Iso_Row", "Wyciskanie hantli siedząc z oparciem": "Seated_Dumbbell_Press", "Ściąganie wyciągu prostymi ramionami": "Straight-Arm_Pulldown", "Rozpiętki na maszynie lub wyciągu": "Butterfly", "Wznosy bokiem hantlami": "Side_Lateral_Raise", "Prostowanie na wyciągu + uginanie młotkowe": "Triceps_Pushdown", "Przysiad do wygodnej wysokości": "Barbell_Squat_To_A_Bench", "Odwrotny wypad (krótki krok, tułów prosto)": "Dumbbell_Rear_Lunge", "Prostowanie nóg siedząc (środkowy zakres)": "Leg_Extensions", "Prostowanie tułowia na ławce 45°": "Hyperextensions_Back_Extensions", "Wspięcia stojąc": "Standing_Calf_Raises", "Dead bug (żebra w dół, lędźwie na macie)": "Dead_Bug", "Dead bug (żebra w dół)": "Dead_Bug", "Face pull (łopatki w dół i w tył)": "Face_Pull", "Pallof press": "Pallof_Press", "Deska bokiem (łatwiejszy wariant)": "Side_Bridge"};
+const PLAN_DBID = {"Wyciskanie hantli na skosie": "Incline_Dumbbell_Press", "Ściąganie drążka nachwytem (szerokie)": "Wide-Grip_Lat_Pulldown", "Wyciskanie na maszynie poziomej (siedząc)": "Leverage_Chest_Press", "Wiosłowanie z podparciem klatki": "Dumbbell_Incline_Row", "Wznosy bokiem na wyciągu": "Standing_Low-Pulley_Deltoid_Raise", "Uginanie ze sztangą łamaną": "EZ-Bar_Curl", "Hip thrust": "Barbell_Hip_Thrust", "RDL z kontrolowanym zakresem": "Romanian_Deadlift", "Leg press (kontrolowana głębokość)": "Leg_Press", "Uginanie ud siedząc": "Seated_Leg_Curl", "Wspięcia na palce siedząc": "Seated_Calf_Raise", "Wyciskanie sztangi leżąc": "Barbell_Bench_Press_-_Medium_Grip", "Wiosłowanie jednorącz na maszynie": "Leverage_Iso_Row", "Wyciskanie hantli siedząc z oparciem": "Seated_Dumbbell_Press", "Ściąganie wyciągu prostymi ramionami": "Straight-Arm_Pulldown", "Rozpiętki na maszynie lub wyciągu": "Butterfly", "Wznosy bokiem hantlami": "Side_Lateral_Raise", "Przysiad do wygodnej wysokości": "Barbell_Squat_To_A_Bench", "Odwrotny wypad (krótki krok, tułów prosto)": "Dumbbell_Rear_Lunge", "Prostowanie nóg siedząc (środkowy zakres)": "Leg_Extensions", "Prostowanie tułowia na ławce 45°": "Hyperextensions_Back_Extensions", "Wspięcia stojąc": "Standing_Calf_Raises", "Dead bug (żebra w dół, lędźwie na macie)": "Dead_Bug", "Dead bug (żebra w dół)": "Dead_Bug", "Face pull (łopatki w dół i w tył)": "Face_Pull", "Pallof press": "Pallof_Press", "Deska bokiem (łatwiejszy wariant)": "Side_Bridge", "Rozpiętki na ławce skośnej na wyciągu": "Incline_Cable_Flye", "Odwrotne rozpiętki na maszynie lub wyciągu": "Reverse_Machine_Flyes", "Uginanie hantli na ławce skośnej": "Incline_Dumbbell_Curl", "Prostowanie ramion zza głowy na wyciągu (leżąc na ławce)": "Cable_Rope_Overhead_Triceps_Extension", "Allahy na wyciągu (stojąc)": "Cable_Crunch", "Ściąganie wąskim chwytem neutralnym": "Close-Grip_Front_Lat_Pulldown", "Uginanie na wyciągu zza ciała (bayesian)": "Standing_One-Arm_Cable_Curl", "Unoszenie nóg zgiętych w zwisie": "Hanging_Leg_Raise", "Uginanie młotkowe hantlami (chwyt neutralny)": "Hammer_Curls", "Odwrotne brzuszki (podwijanie miednicy)": "Reverse_Crunch", "Hack squat (kontrolowana głębokość)": "Hack_Squat", "Prostowanie ramion na wyciągu (lina)": "Triceps_Pushdown", "Prostowanie na wyciągu + uginanie młotkowe": "Triceps_Pushdown"};
 let EXDB=null, EXMETA=null, EXMAP=null, exLoading=null, exShown=40;
 const exui=Object.assign({q:"",mu:"",eq:"",plan:false}, loadJSON("plan28-exui",{}));
 function normTxt(t){return String(t||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/ł/g,"l")}
